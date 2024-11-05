@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS users (
+    userID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    userName VARCHAR(255) NOT NULL,
+    userPassword VARCHAR(255) NOT NULL,
+    balance INT
+);
+
+CREATE TABLE IF NOT EXISTS apiKeys (
+    userID INTEGER NOT NULL,
+    apiKey VARCHAR(255) NOT NULL,
+    expirationDate DATETIME NOT NULL
+);

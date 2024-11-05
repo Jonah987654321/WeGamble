@@ -1,0 +1,41 @@
+.navbar {
+    width: 100%;
+    height: 75px;
+    background-color: var(--dark-bg-scnd);
+    display: flex;
+    flex-direction: row;
+}
+
+.navElem {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.navMid {
+    justify-content: center;
+}
+
+.navMid img {
+    height: 80px;
+    transform: translateY(30px);
+}
+
+.navRight {
+    flex-direction: column;
+    justify-content: end !important;
+}
+
+div.username, div.balance {
+    padding-right: 30px;
+    width: calc(100% - 30px);
+    flex: 1;
+    display: flex;
+    justify-content: end;
+    align-items: start;
+}
+
+div.username {
+    font-size: 20px;
+    align-items: end;
+}

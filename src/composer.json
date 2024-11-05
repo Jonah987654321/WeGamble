@@ -1,0 +1,5 @@
+{
+    "require": {
+        "jonahh/omniroute": "^1.2"
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "3989fcffa21549adacc0763d65dccb90",
+    "packages": [
+        {
+            "name": "jonahh/omniroute",
+            "version": "v1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jonah987654321/OmniRoute.git",
+                "reference": "f0d0b549956b13cf1fe9fe93a6c25e95483bf8e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jonah987654321/OmniRoute/zipball/f0d0b549956b13cf1fe9fe93a6c25e95483bf8e7",
+                "reference": "f0d0b549956b13cf1fe9fe93a6c25e95483bf8e7",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OmniRoute\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonah",
+                    "email": "jonah@jo-dev.net"
+                }
+            ],
+            "description": "A simple framework to make URL Routing in PHP easier",
+            "support": {
+                "issues": "https://github.com/Jonah987654321/OmniRoute/issues",
+                "source": "https://github.com/Jonah987654321/OmniRoute/tree/v1.2.6"
+            },
+            "time": "2024-11-05T13:37:11+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}

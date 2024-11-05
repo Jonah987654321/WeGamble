@@ -1,0 +1,135 @@
+*:focus {
+    outline: none;
+}
+
+@media screen and (max-width:750px) {
+    .loginWrap {
+        min-height: 100vh;
+        width: 100% !important;
+        border-radius: 0px !important;
+    }
+}
+
+@media screen and (min-width:750px) and (max-width:1500px) {
+    .loginWrap {
+        width: 50% !important;
+    }
+}
+
+body {
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
+}
+
+.logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 90px;
+    margin-bottom: 70px;
+}
+
+img#logo {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.loginWrap {
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
+    color: light-dark(var(--light-text), var(--dark-text));
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border-radius: 20px;
+}
+
+.loginFieldWrap {
+    width: 60%;
+    margin-left: 20%;
+    text-align: left;
+}
+
+.loginFieldWrap input:not([type=checkbox]) {
+    border: none;
+    border-bottom: 2px solid light-dark(var(--light-btn), var(--dark-btn));
+    margin-bottom: 40px;
+    width: 100%;
+    font-size: 120%;
+    padding: 10px;
+    padding-left: 30px;
+    background: none;
+}
+
+.loginFieldWrap input:focus {
+    border-bottom: 2px solid light-dark(var(--light-btn-hvr), var(--dark-btn-hvr));
+}
+
+.loginFieldWrap input:focus+.inputIcon {
+    color: light-dark(var(--light-btn-hvr), var(--dark-btn-hvr));
+}
+
+.loginFieldWrap input.errorInput {
+    border-bottom: 2px solid red;
+}
+
+.inputIcon {
+    transform: translate(3px, -72px);
+    color: light-dark(var(--light-btn), var(--dark-btn));
+    font-size: 120%;
+}
+
+.errorIndicator {
+    color: red;
+}
+
+.forgotPwd {
+    transform: translate(0, -50px);
+    cursor: pointer;
+    text-align: right;
+}
+
+#loginButton {
+    text-transform: uppercase;
+    border-radius: 25px;
+    cursor: pointer;
+    border: none;
+    font-size: 120%;
+    padding: 10px;
+    width: 60%;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    background-image: linear-gradient(to right, #84fab0 0%, #8fd3f4 51%, #84fab0 100%);
+    text-shadow:0.5px 0.5px 10px #000000;
+    margin-top: 50px;
+    margin-bottom: 90px;
+}
+
+#loginButton:hover {
+    background-position: right center;
+}
+
+.sectionTitle {
+    color: light-dark(var(--light-text), var(--dark-text));
+    font-size: 120%;
+    margin-top: 100px;
+}
+
+#signUpRef {
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+#signUpRef a {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 15px;
+    color: light-dark(var(--light-btn), var(--dark-btn));
+}
+
+.alignRight {
+    text-align: right;
+}

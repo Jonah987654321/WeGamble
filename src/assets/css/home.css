@@ -1,0 +1,44 @@
+body {
+    background-color: var(--dark-bg);
+}
+
+.gameSelector {
+    margin-top: 40px;
+    display: flex;
+    padding: 30px;
+}
+
+.gameCard {
+    width: 25%;
+    padding: 10px;
+    border: 1px solid var(--dark-text);
+    border-radius: 10px;
+}
+
+.gameCard img {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.gameName {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.gameButtonWrapper {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.gameButtonWrapper button {
+    border: none;
+    background-color: var(--dark-btn);
+    padding: 5px;
+    font-size: 18px;
+    color: var(--dark-btn-text)
+}
+
+.gameButtonWrapper button:hover {
+    background-color: var(--dark-btn-hvr);
+    cursor: pointer;
+}

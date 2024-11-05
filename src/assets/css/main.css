@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  color-scheme: light dark;
+
+  --light-bg: #ffffff;
+  --light-bg-scnd: #dddddd;
+  --light-text: #000000;
+  --light-btn: #b7b7b7;
+  --light-btn-hvr: #9c9b9b;
+  --light-btn-click: #5c5b5b;
+
+  --dark-bg: #2C2C2C;
+  --dark-bg-scnd: #9B111E;
+  --dark-text: #E0E0E0;
+  --dark-btn: #FFD700;
+  --dark-btn-hvr: #FFB800;
+  --dark-btn-click: #E59400;
+  --dark-btn-text: #2C2C2C;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.light { 
+  /* forces light color-scheme */
+  color-scheme: light;
+}
+.dark {
+  /* forces dark color-scheme */
+  color-scheme: dark;
+}
