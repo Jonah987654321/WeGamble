@@ -1,7 +1,11 @@
 <div class="navbar">
     <div class="navElem navLeft"></div>
     <div class="navElem navMid">
-        <img src="assets/img/logo.png" alt="Logo">
+        <?php
+        require_once __DIR__."/../modules/config/config.php";
+        
+        echo '<img src="'.SERVER_PATH.'/assets/img/logo.png" alt="Logo">';
+        ?>
     </div>
     <div class="navElem navRight">
         <?php

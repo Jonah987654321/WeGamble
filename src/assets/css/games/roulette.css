@@ -1,0 +1,150 @@
+body {
+  background-color: var(--dark-bg);
+}
+
+.mainWrapper {
+  margin-top: 50px;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.rouletteBoard td {
+  height: 70px;
+}
+
+.rouletteBoard,
+.rouletteBoard tr,
+.rouletteBoard td {
+  border-collapse: collapse;
+}
+
+.rouletteBoard td {
+  border: 1px solid var(--dark-text);
+}
+
+.redField {
+  background-color: red;
+}
+
+.blackField {
+  background-color: black;
+}
+
+.greenField {
+  background-color: rgb(2, 78, 2);
+}
+
+.roE {
+  border: none !important;
+}
+
+.roF {
+  font-size: 20px;
+  display: flex;
+  align-items: start;
+  justify-content: end;
+  height: 100%;
+  padding: 5px;
+  cursor: pointer;
+}
+
+#roF-0 {
+  height: 330% !important;
+}
+
+.roNF {
+  width: 70px;
+  height: 70px;
+}
+
+.roNF, .roRF {
+    position: relative;
+}
+
+.roRF {
+  width: 140px;
+}
+
+.betDisplay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.slider {
+    -webkit-appearance: none;
+  width: 30vw;
+  height: 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.9;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: var(--dark-bg-scnd);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: var(--dark-bg-scnd);
+  cursor: pointer;
+}
+
+.bidButtons button {
+    border: none;
+    width: 22%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 2%;
+    cursor: pointer;
+}
+
+#bidDisplay {
+    margin-top: 5px;
+    text-align: right;
+}
+
+.finishBid, .bidButtons {
+    text-align: right;
+}
+
+.finishBid button {
+    border: none;
+    width: 22%;
+    padding: 15px;
+    margin-top: 50px;
+    margin-right: 2%;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+}
+
+.finishBid button:hover {
+    cursor: pointer;
+    background-color: var(--dark-btn-hvr);
+}
+
+#cancel {
+    background-color: lightgray !important;
+}
+
+#cancel:hover {
+    background-color: rgb(167, 167, 167) !important;
+}
