@@ -66,3 +66,61 @@ function placeBid(e) {
 document.querySelectorAll(".roF").forEach((field) => {
     field.addEventListener("click", placeBid);
 });
+
+function spin() {
+    let btn = document.getElementById("spinBtn");
+    btn.disabled = true;
+    fetch(document.getElementById("serverURLStash").value+"/api/roulette",
+        {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({
+                "auth": document.getElementById("apiTokenStash").value,
+                "bids": bids
+            })
+        }
+    ).then(res => {
+        if (res.status == 401) {
+            window.location.href="/logout";
+        }
+        if (res.status == 204) {
+            //action for no bids placed
+        }
+        if (res.status == 406) {
+            //action for invalid bids
+        }
+        return res.json();
+    }).then(data => {
+        document.getElementById("userBalanceStash").value = data["newBalance"];
+        document.getElementById("balanceDisplay").innerHTML = data["newBalance"]+"€";
+        balance = Number(data["newBalance"]);
+        document.getElementById("roF-"+data["number"].toString()).classList.toggle("success");
+        data["winningBids"].forEach(bid => {
+            document.getElementById("roBD-"+bid.toString()).classList.toggle("winning")
+        });
+        data["losingBids"].forEach(bid => {
+            document.getElementById("roBD-"+bid.toString()).classList.toggle("losing")
+        });
+        btn.hidden = true;
+        btn.disabled = false;
+        document.getElementById("newGameBtn").hidden = false;
+    });
+}
+
+function resetBoard() {
+    document.querySelectorAll(".roF").forEach(e => {
+        e.classList.remove("success");
+    });
+
+    document.querySelectorAll(".betDisplay").forEach(e => {
+        e.innerHTML = '';
+        e.classList.remove("losing");
+        e.classList.remove("winning");
+    });
+
+    bids = [];
+    document.getElementById("newGameBtn").hidden = true;
+    document.getElementById("spinBtn").hidden = false;
+}

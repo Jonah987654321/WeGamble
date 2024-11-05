@@ -1,6 +1,6 @@
 <?php
 
-require_once "modules/dbController.php";
+require "modules/dbController.php";
 
 require 'vendor/autoload.php';
 
@@ -50,7 +50,14 @@ Router::add("/login", function() {
     OmniLogin::loginUserAndRedirect($user);
 }, method: ["POST"]);
 
+Router::add("/logout", function() {
+    revokeToken(OmniLogin::getUser()["apiToken"]);
+    OmniLogin::logoutUser();
+    return redirect("/login");
+}, ext: [LOGIN_REQUIRED]);
+
 Router::registerSubRouter("games.php");
+Router::registerSubRouter("api.php");
 
 Router::run();
 

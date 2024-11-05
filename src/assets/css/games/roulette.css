@@ -58,6 +58,10 @@ body {
   height: 70px;
 }
 
+.roF.success {
+    background-color: #ADD8E6;
+}
+
 .roNF, .roRF {
     position: relative;
 }
@@ -71,6 +75,14 @@ body {
   bottom: 0;
   width: 100%;
   text-align: center;
+}
+
+.betDisplay.losing {
+    text-decoration: line-through 1px solid white;
+}
+
+.betDisplay.winning {
+    color: var(--dark-btn-hvr);
 }
 
 .slider {
@@ -147,4 +159,27 @@ body {
 
 #cancel:hover {
     background-color: rgb(167, 167, 167) !important;
+}
+
+.allBidsDone {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.allBidsDone button {
+    border: none;
+    text-transform: uppercase;
+    font-size: 30px;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+    padding: 20px;
+}
+
+.allBidsDone button:hover {
+    cursor: pointer;
+    background-color: var(--dark-btn-hvr);
+}
+
+.allBidsDone button:disabled {
+    background-color: gray;
 }

@@ -12,9 +12,10 @@
     <body>
         <?php
 
-use OmniRoute\Extensions\OmniLogin;
+        use OmniRoute\Extensions\OmniLogin;
 
         require_once __DIR__."/../navbar.php";
+        require_once __DIR__."/../../modules/config/config.php";
         ?>
 
         <div class="mainWrapper">
@@ -231,7 +232,13 @@ use OmniRoute\Extensions\OmniLogin;
                 </tr>
             </table>
         </div>
+        <div class="allBidsDone">
+            <button onclick="spin();" id="spinBtn">Spin</button>
+            <button onclick="resetBoard();" id="newGameBtn" hidden>Neues Spiel</button>
+        </div>
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
+        <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
+        <input type="hidden" value="<?php echo SERVER_PATH ?>" id="serverURLStash">
     </body>
     <script src="../../assets/js/overlay.js"></script>
     <script src="../../assets/js/games/roulette.js"></script>

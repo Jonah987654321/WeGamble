@@ -23,7 +23,7 @@
             }
 
             echo '<div class="username">'.OmniLogin::getUser()["userName"].'</div>';
-            echo '<div class="balance">'.formatCurrency(OmniLogin::getUser()["balance"]).'€</div>';
+            echo '<div class="balance" id="balanceDisplay">'.formatCurrency(OmniLogin::getUser()["balance"]).'€</div>';
         ?>
     </div>
 </div>
