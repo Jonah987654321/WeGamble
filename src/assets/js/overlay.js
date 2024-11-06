@@ -22,6 +22,13 @@ var injectCSS = `
     position: relative;
 }
 
+@media only screen and (max-width: 481px) {
+    .overlay {
+        width: 100dvw;
+        heigth: 100dvh;
+    }
+}
+
 .overlayTitle {
     margin-bottom: 30px;
     margin-right: 60px;
