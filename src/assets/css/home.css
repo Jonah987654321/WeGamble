@@ -1,5 +1,6 @@
 body {
     background-color: var(--dark-bg);
+    color: var(--dark-text) !important;
 }
 
 .gameSelector {

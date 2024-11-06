@@ -2,7 +2,7 @@
 
 use OmniRoute\Router;
 
-Router::registerPrefix("/api");
+Router::registerPrefix("/backend");
 
 Router::add("/roulette", function() {
     header("Content-Type: application/json; charset=UTF-8");

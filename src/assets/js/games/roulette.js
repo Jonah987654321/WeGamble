@@ -40,7 +40,9 @@ function placeBid(e) {
         <label for="bettingMoneySelector">Betrag auswählen:</label><br>
         <input type="range" min="1" max="${maxBalance}" value="${(id in bids)?bids[id]:hBalance}" class="slider" id="bettingMoneySelector">
     </div>
-    <div id="bidDisplay"></div>
+    <div id="bidDisplay">
+        <input type="number" id="bidDisplayInput">
+    </div>
     <div class="bidButtons">
         <button onclick="document.getElementById('bettingMoneySelector').value=${qBalance}; document.getElementById('bidDisplay').innerText=${qBalance};">1/4</button>
         <button onclick="document.getElementById('bettingMoneySelector').value=${hBalance}; document.getElementById('bidDisplay').innerText=${hBalance};">1/2</button>
@@ -55,11 +57,15 @@ function placeBid(e) {
     createNewOverlay(bidPlacing);
 
     var slider = document.getElementById("bettingMoneySelector");
-    var output = document.getElementById("bidDisplay");
-    output.innerHTML = slider.value;
+    var output = document.getElementById("bidDisplayInput");
+    output.value = slider.value;
+
+    output.oninput = function() {
+        slider.value = output.value;
+    }
 
     slider.oninput = function() {
-        output.innerHTML = this.value;
+        output.value = slider.value;
     }
 }
 
@@ -70,7 +76,7 @@ document.querySelectorAll(".roF").forEach((field) => {
 function spin() {
     let btn = document.getElementById("spinBtn");
     btn.disabled = true;
-    fetch(document.getElementById("serverURLStash").value+"/api/roulette",
+    fetch(document.getElementById("serverURLStash").value+"/backend/roulette",
         {
             headers: {
                 "Content-Type": "application/json"
@@ -120,7 +126,7 @@ function resetBoard() {
         e.classList.remove("winning");
     });
 
-    bids = [];
+    bids = {};
     document.getElementById("newGameBtn").hidden = true;
     document.getElementById("spinBtn").hidden = false;
 }

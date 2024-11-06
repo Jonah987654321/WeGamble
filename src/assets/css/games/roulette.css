@@ -1,5 +1,10 @@
+*:focus {
+    outline: none;
+}
+
 body {
   background-color: var(--dark-bg);
+  color: var(--dark-text) !important;
 }
 
 .mainWrapper {
@@ -49,8 +54,10 @@ body {
   cursor: pointer;
 }
 
-#roF-0 {
-  height: 330% !important;
+@-moz-document url-prefix() {
+    #roF-0 {
+      height: 330% !important;
+    }
 }
 
 .roNF {
@@ -64,6 +71,7 @@ body {
 
 .roNF, .roRF {
     position: relative;
+    overflow: hidden;
 }
 
 .roRF {
@@ -182,4 +190,24 @@ body {
 
 .allBidsDone button:disabled {
     background-color: gray;
+}
+
+#bidDisplayInput  {
+    border: none;
+    background: none;
+    padding: 5px;
+    color: black !important;
+    text-align: right;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
