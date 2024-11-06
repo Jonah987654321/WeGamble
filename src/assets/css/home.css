@@ -9,6 +9,12 @@ body {
     padding: 30px;
 }
 
+@media only screen and (max-width: 481px) {
+    .gameCard {
+        width: 100% !important;
+    }
+}
+
 .gameCard {
     width: 25%;
     padding: 10px;

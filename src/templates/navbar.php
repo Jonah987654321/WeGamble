@@ -1,5 +1,8 @@
 <div class="navbar">
-    <div class="navElem navLeft"></div>
+    <div class="navElem navLeft">
+        <button class="navBtn" onclick="window.location.href='/'"><i class="fa-solid fa-house"></i></button>
+        <button class="navBtn" onclick="window.location.href='/leaderboard'"><i class="fa-solid fa-chart-simple"></i></button>
+    </div>
     <div class="navElem navMid">
         <?php
         require_once __DIR__."/../modules/config/config.php";

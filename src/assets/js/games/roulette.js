@@ -44,10 +44,10 @@ function placeBid(e) {
         <input type="number" id="bidDisplayInput">
     </div>
     <div class="bidButtons">
-        <button onclick="document.getElementById('bettingMoneySelector').value=${qBalance}; document.getElementById('bidDisplay').value=${qBalance};">1/4</button>
-        <button onclick="document.getElementById('bettingMoneySelector').value=${hBalance}; document.getElementById('bidDisplay').value=${hBalance};">1/2</button>
-        <button onclick="document.getElementById('bettingMoneySelector').value=${tqBalance}; document.getElementById('bidDisplay').value=${tqBalance};">3/4</button>
-        <button onclick="document.getElementById('bettingMoneySelector').value=${maxBalance}; document.getElementById('bidDisplay').value=${maxBalance};">All in</button>
+        <button onclick="document.getElementById('bettingMoneySelector').value=${qBalance}; document.getElementById('bidDisplayInput').value=${qBalance};">1/4</button>
+        <button onclick="document.getElementById('bettingMoneySelector').value=${hBalance}; document.getElementById('bidDisplayInput').value=${hBalance};">1/2</button>
+        <button onclick="document.getElementById('bettingMoneySelector').value=${tqBalance}; document.getElementById('bidDisplayInput').value=${tqBalance};">3/4</button>
+        <button onclick="document.getElementById('bettingMoneySelector').value=${maxBalance}; document.getElementById('bidDisplayInput').value=${maxBalance};">All in</button>
     </div>
     <div class="finishBid">
         ${secondaryButton}

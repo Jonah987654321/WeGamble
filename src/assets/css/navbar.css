@@ -39,3 +39,11 @@ div.username {
     font-size: 20px;
     align-items: end;
 }
+
+.navBtn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    margin-left: 20px;
+}
