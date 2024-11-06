@@ -4,12 +4,16 @@ DirectoryIndex index.php
 RewriteEngine on
 
 # set your rewrite base
-# Edit this in your init method too if you script lives in a subfolder
+# Edit this in your init method too if your script lives in a subfolder
 RewriteBase /
+
+# Force HTTPS redirect
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Deliver the folder or file directly if it exists on the server
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
- 
+
 # Push every request to index.php
 RewriteRule ^(.*)$ index.php [QSA]
