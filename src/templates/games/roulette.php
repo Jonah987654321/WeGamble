@@ -240,6 +240,7 @@
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
         <input type="hidden" value="<?php echo SERVER_PATH ?>" id="serverURLStash">
     </body>
+    <script src="../../assets/js/functions.js"></script>
     <script src="../../assets/js/overlay.js"></script>
     <script src="../../assets/js/games/roulette.js"></script>
 </html>

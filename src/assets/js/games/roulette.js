@@ -12,7 +12,7 @@ function finishBid(id) {
         balance -= amount;
     }
 
-    document.getElementById("roBD-"+id).innerHTML = amount.toString()+"€"
+    document.getElementById("roBD-"+id).innerHTML = formatCurrency(amount).toString()+"€"
     destructOverlay();
 }
 
@@ -100,7 +100,7 @@ function spin() {
         return res.json();
     }).then(data => {
         document.getElementById("userBalanceStash").value = data["newBalance"];
-        document.getElementById("balanceDisplay").innerHTML = data["newBalance"]+"€";
+        document.getElementById("balanceDisplay").innerHTML = formatCurrency(data["newBalance"])+"€";
         balance = Number(data["newBalance"]);
         document.getElementById("roF-"+data["number"].toString()).classList.toggle("success");
         data["winningBids"].forEach(bid => {
