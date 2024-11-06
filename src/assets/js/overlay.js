@@ -24,7 +24,7 @@ var injectCSS = `
 
 @media only screen and (max-width: 481px) {
     .overlay {
-        width: 100%;
+        width: 100vw;
     }
 }
 

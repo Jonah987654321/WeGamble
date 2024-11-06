@@ -112,8 +112,17 @@ body {
   }
 
   .mainWrapper {
-    width: 100%;
+    width: 100vw;
     overflow-x: scroll;
+    display: block;
+  }
+
+  .roF {
+    width: 70px !important;
+  }
+
+  #roF-h1, #roF-h2, #roF-ue, #roF-ev, #roF-red, #roF-black {
+    width: 140px !important;
   }
 }
 
