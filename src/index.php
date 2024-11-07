@@ -56,6 +56,12 @@ Router::add("/logout", function() {
     return redirect("/login");
 }, ext: [LOGIN_REQUIRED]);
 
+Router::add("/leaderboard", function() {
+    $data = getLeaderboard();
+
+    require_once "templates/leaderboard.php";
+}, ext: [LOGIN_REQUIRED]);
+
 Router::registerSubRouter("games.php");
 Router::registerSubRouter("api.php");
 

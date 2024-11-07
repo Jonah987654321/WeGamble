@@ -99,4 +99,15 @@ function updateBalance($userID, $nB) {
     $stmt->execute([$nB, $userID]);
     $conn->close();
 }
+
+function getLeaderboard() {
+    $conn = newSQLConnection();
+    $stmt = $conn->prepare("SELECT userID, userName, balance FROM users ORDER BY balance DESC");
+    $stmt->execute();
+
+    $res = $stmt->get_result()->fetch_all();
+    $conn->close();
+
+    return $res;
+}
 ?>
