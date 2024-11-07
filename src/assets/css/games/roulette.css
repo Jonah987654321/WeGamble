@@ -128,7 +128,7 @@ body {
 
 @media only screen and (min-width: 481px) and (max-width: 1200px) {
     .slider {
-        width: 50dvw !important;
+        width: 60dvw !important;
     }
 }
 
