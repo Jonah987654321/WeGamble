@@ -157,8 +157,9 @@ Router::add("/roulette", function() {
     $totalWinLoss = 0;
     foreach (array_keys($body["bids"]) as $bid) {
         if (in_array($result, $winningConditions[$bid])) {
-            $winningBids[] = $bid;
-            $totalWinLoss += intval($body["bids"][$bid])*$winningMultipliers[$bid];
+            $winAmount = intval($body["bids"][$bid])*$winningMultipliers[$bid];
+            $winningBids[] = ["ID" => $bid, "winAmount" => $winAmount];
+            $totalWinLoss += $winAmount;
         } else {
             $losingBids[] = $bid;
             $totalWinLoss -= intval($body["bids"][$bid]);

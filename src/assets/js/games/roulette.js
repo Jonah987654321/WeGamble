@@ -1,7 +1,15 @@
 var bids = {};
+var lastBids = {};
 var balance = Number(document.getElementById("userBalanceStash").value);
 var biddingOpen = false;
 var currentBidID = null;
+var spinRunning = false;
+
+function renderBids() {
+    for (const [key, value] of Object.entries(bids)) {
+        document.getElementById("roBD-"+key).innerHTML = formatCurrency(value).toString()+"€"
+    };
+}
 
 function finishBid(id) {
     let amount = Number(document.getElementById("bettingMoneySelector").value);
@@ -14,7 +22,7 @@ function finishBid(id) {
         balance -= amount;
     }
 
-    document.getElementById("roBD-"+id).innerHTML = formatCurrency(amount).toString()+"€"
+    renderBids();
     destructOverlay();
     currentBidID = null;
     biddingOpen = false;
@@ -34,7 +42,72 @@ document.addEventListener("keydown", (e) => {
     }
 })
 
+function animateToNumber(number) {
+    let animationSteps = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+    let animationNumber = getRandomInt(0, 36);
+    let totalFrames = 37*(getRandomInt(2, 3))+((animationSteps.indexOf(animationNumber) > animationSteps.indexOf(number))?(animationSteps.length-animationSteps.indexOf(animationNumber))+animationSteps.indexOf(number):animationSteps.indexOf(number)-animationSteps.indexOf(animationNumber));
+    let animationDuration = 3000;
+    
+    let frameDurations = [];
+    let initialFrameDuration = animationDuration / (totalFrames * 1.5); // kürzerer Startwert
+    let slowDownFactor = 10; // Faktor, um die Dauer zu verlangsamen
+    let lastSlowFrames = getRandomInt(5, 12);
+
+    for (let i = 0; i < (totalFrames-(lastSlowFrames+5)); i++) {
+        // Erhöhe die Dauer schrittweise bis zum Ende
+        let progress = i / totalFrames;
+        frameDurations.push(initialFrameDuration * (1 + slowDownFactor * progress));
+    }
+
+    for (let i=0; i < lastSlowFrames; i++) {
+        frameDurations.push(750);
+    }
+
+    frameDurations.push(1300);
+    frameDurations.push(1300);
+    frameDurations.push(1300);
+    frameDurations.push(2000);
+    frameDurations.push(2000);
+
+    // Normiere die Frame-Dauern so, dass die Summe der Frame-Dauern `animationDuration` ergibt
+    let totalDuration = frameDurations.reduce((sum, duration) => sum + duration, 0);
+    frameDurations = frameDurations.map(duration => duration * (animationDuration / totalDuration));
+
+    document.getElementById("roF-"+animationNumber.toString()).classList.toggle("success");
+    let frame = 0;
+
+    function lastFrames(iterations) {
+        iterations--;
+
+        document.getElementById("roF-"+number.toString()).classList.toggle("success");
+
+        if (iterations === 0) {
+            return
+        }
+        setTimeout(function() {lastFrames(iterations)}, 200);
+    }
+    
+    function animateFrame() {
+		frame++;
+        document.getElementById("roF-"+animationNumber.toString()).classList.toggle("success");
+        animationNumber = (animationNumber==animationSteps[animationSteps.length-1])?animationSteps[0]:animationSteps[animationSteps.indexOf(animationNumber)+1];
+        document.getElementById("roF-"+animationNumber.toString()).classList.toggle("success");
+        if (frame === totalFrames) {
+            setTimeout(function() {lastFrames(6)}, 200);
+            return;
+        }
+
+        setTimeout(animateFrame, frameDurations[frame]);
+    }
+
+    // Start der Animation
+    setTimeout(animateFrame, frameDurations[0]);
+}
+
 function placeBid(e) {
+    if (spinRunning) {
+        return;
+    }
     const id = e.target.id.split("-")[1];
     biddingOpen = true;
     currentBidID = id;
@@ -69,7 +142,7 @@ function placeBid(e) {
     createNewOverlay(bidPlacing);
 
     if (!isMobile()) {
-        
+        document.getElementById("bidDisplayInput").focus();
     }
 
     var slider = document.getElementById("bettingMoneySelector");
@@ -90,6 +163,7 @@ document.querySelectorAll(".roF").forEach((field) => {
 });
 
 function spin() {
+    spinRunning = true;
     let btn = document.getElementById("spinBtn");
     btn.disabled = true;
     fetch(document.getElementById("serverURLStash").value+"/backend/roulette",
@@ -108,26 +182,38 @@ function spin() {
             window.location.href="/logout";
         }
         if (res.status == 204) {
-            //action for no bids placed
+            notify("Bitte platziere erst eine Wette");
+            btn.disabled = false;
+            return;
         }
         if (res.status == 406) {
             //action for invalid bids
         }
         return res.json();
     }).then(data => {
-        document.getElementById("userBalanceStash").value = data["newBalance"];
-        document.getElementById("balanceDisplay").innerHTML = formatCurrency(data["newBalance"])+"€";
-        balance = Number(data["newBalance"]);
-        document.getElementById("roF-"+data["number"].toString()).classList.toggle("success");
-        data["winningBids"].forEach(bid => {
-            document.getElementById("roBD-"+bid.toString()).classList.toggle("winning")
-        });
-        data["losingBids"].forEach(bid => {
-            document.getElementById("roBD-"+bid.toString()).classList.toggle("losing")
-        });
-        btn.hidden = true;
-        btn.disabled = false;
-        document.getElementById("newGameBtn").hidden = false;
+        animateToNumber(data["number"]);
+        setTimeout(() => {
+            document.getElementById("userBalanceStash").value = data["newBalance"];
+            let totalBalanceEl = document.getElementById("balanceDisplay");
+            let newBalance = Number(data["newBalance"]);
+            let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
+            (newBalance > balance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
+            balance = newBalance;
+            data["winningBids"].forEach(bid => {
+                let winEl = document.getElementById("roBD-"+bid["ID"].toString());
+                winEl.classList.toggle("winning");
+                animateCountUp(winEl, 500, bids[bid["ID"]], bids[bid["ID"]]+bid["winAmount"]);
+            });
+            data["losingBids"].forEach(bid => {
+                let looseEl = document.getElementById("roBD-"+bid.toString());
+                looseEl.classList.toggle("losing")
+                animateCountDown(looseEl, 500, bids[bid.toString()], 0);
+            });
+            setTimeout(() => {
+                resetBoard();
+                document.getElementById("spinBtn").disabled = false;
+            }, 1500);
+        }, 6500);
     });
 }
 
@@ -142,7 +228,19 @@ function resetBoard() {
         e.classList.remove("winning");
     });
 
+    lastBids = structuredClone(bids);
     bids = {};
-    document.getElementById("newGameBtn").hidden = true;
-    document.getElementById("spinBtn").hidden = false;
+    document.getElementById("lastBidsRedo").style.visibility = "visible";
+    spinRunning = false;
+}
+
+function redoLastBids(multiplier) {
+    if (spinRunning) {
+        return;
+    }
+    bids = structuredClone(lastBids);
+    for (const [key, value] of Object.entries(bids)) {
+        bids[key] = value*multiplier;
+    }
+    renderBids();
 }

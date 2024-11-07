@@ -232,9 +232,13 @@
                 </tr>
             </table>
         </div>
+        <div id="lastBidsRedo">
+            <p>Letzte Einsätze:</p>
+            <button onclick="redoLastBids(1);">x1</button>
+            <button onclick="redoLastBids(2);">x2</button>
+        </div>
         <div class="allBidsDone">
             <button onclick="spin();" id="spinBtn">Spin</button>
-            <button onclick="resetBoard();" id="newGameBtn" hidden>Neues Spiel</button>
         </div>
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
