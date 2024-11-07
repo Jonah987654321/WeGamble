@@ -1,12 +1,14 @@
 var bids = {};
 var balance = Number(document.getElementById("userBalanceStash").value);
+var biddingOpen = false;
+var currentBidID = null;
 
 function finishBid(id) {
     let amount = Number(document.getElementById("bettingMoneySelector").value);
     if (id in bids) {
         let difference = bids[id]-amount
         bids[id] = amount;
-        balance += difference
+        balance += difference;
     } else {
         bids[id] = amount;
         balance -= amount;
@@ -14,6 +16,8 @@ function finishBid(id) {
 
     document.getElementById("roBD-"+id).innerHTML = formatCurrency(amount).toString()+"€"
     destructOverlay();
+    currentBidID = null;
+    biddingOpen = false;
 }
 
 function removeBid(id) {
@@ -24,8 +28,16 @@ function removeBid(id) {
     destructOverlay();
 }
 
+document.addEventListener("keydown", (e) => {
+    if (e.key == "Enter") {
+        biddingOpen?finishBid(currentBidID):spin();
+    }
+})
+
 function placeBid(e) {
     const id = e.target.id.split("-")[1];
+    biddingOpen = true;
+    currentBidID = id;
     const maxBalance = (id in bids)?balance+bids[id]:balance;
     const tqBalance = Math.round(.75*maxBalance);
     const hBalance = Math.round(.5*maxBalance);

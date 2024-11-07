@@ -15,9 +15,10 @@
         ?>
         <div class="leaderboardContainer">
             <?php
+            require_once __DIR__."/../modules/utils.php";
             $i = 1;
             foreach ($data as $entry) {
-                echo "$i. ".$entry[1]." (".$entry[2]."€)<br>";
+                echo "$i. ".$entry[1]." (".formatCurrency($entry[2])."€)<br>";
                 $i++;
             } 
             ?>
