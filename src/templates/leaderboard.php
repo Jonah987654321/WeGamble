@@ -17,7 +17,7 @@
             <?php
             $i = 1;
             foreach ($data as $entry) {
-                echo "$i. ".$data[1]." (".$data[2]."€)";
+                echo "$i. ".$entry[1]." (".$entry[2]."€)<br>";
                 $i++;
             } 
             ?>
