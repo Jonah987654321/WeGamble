@@ -68,6 +68,10 @@ function placeBid(e) {
     `;
     createNewOverlay(bidPlacing);
 
+    if (!isMobile()) {
+        
+    }
+
     var slider = document.getElementById("bettingMoneySelector");
     var output = document.getElementById("bidDisplayInput");
     output.value = slider.value;

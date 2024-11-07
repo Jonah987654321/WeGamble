@@ -60,7 +60,7 @@ Router::add("/leaderboard", function() {
     $data = getLeaderboard();
 
     require_once "templates/leaderboard.php";
-}, ext: [LOGIN_REQUIRED]);
+}, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
 
 Router::registerSubRouter("games.php");
 Router::registerSubRouter("api.php");
