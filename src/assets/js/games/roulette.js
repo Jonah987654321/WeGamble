@@ -108,6 +108,10 @@ function placeBid(e) {
     if (spinRunning) {
         return;
     }
+    if (balance == 0) {
+        notify("Du hast kein Geld uum Wetten zu platzieren");
+        return;
+    }
     const id = e.target.id.split("-")[1];
     biddingOpen = true;
     currentBidID = id;
