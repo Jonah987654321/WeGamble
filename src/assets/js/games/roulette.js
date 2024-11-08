@@ -38,7 +38,7 @@ function removeBid(id) {
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "Enter") {
-        biddingOpen?finishBid(currentBidID):spin();
+        biddingOpen?finishBid(currentBidID):(spinRunning?null:spin());
     }
 })
 
@@ -188,7 +188,10 @@ function spin() {
             return;
         }
         if (res.status == 406) {
-            //action for invalid bids
+            notify("Wetten ungültig, bitte überprüfen");
+            btn.disabled = false;
+            spinRunning = false;
+            return;
         }
         return res.json();
     }).then(data => {
