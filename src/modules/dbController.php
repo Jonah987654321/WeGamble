@@ -74,6 +74,9 @@ function loginUser($uname, $pwd) {
 
     $user = $res->fetch_assoc();
 
+    $stmt = $conn->prepare("UPDATE stats SET lastLogin=? WHERE userID=?");
+    $stmt->execute([date('Y-m-d H:i:s'), $user["userID"]]);
+
     $conn->close();
 
     $user["apiToken"] = generateAPIToken($user["userID"]);
@@ -109,5 +112,71 @@ function getLeaderboard() {
     $conn->close();
 
     return $res;
+}
+
+function getUserStats($userID) {
+    $conn = newSQLConnection();
+
+    $stmt = $conn->prepare("SELECT * FROM stats WHERE userID=?");
+    $stmt->execute([$userID]);
+    $res = $stmt->get_result()->fetch_assoc();
+    $stats = $res;
+
+    $stmt = $conn->prepare("SELECT gameID, timestamp, winLoss FROM history WHERE userID=?");
+    $stmt->execute([$userID]);
+    $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stats["history"] = $res;
+
+    $stmt = $conn->prepare("SELECT gameID, playTime, wins, winSum, looses, looseSum FROM gameSpecificStats WHERE userID=?");
+    $stmt->execute([$userID]);
+    $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $gameStats = [];
+    foreach ($res as $game) {
+        $gameStats[$game["gameID"]] = $game;
+    }
+    $stats["gameStats"] = $gameStats;
+
+    $conn->close();
+    return $stats;
+}
+
+function updateStats($userID, $gameID, $winLoss) {
+    $stats = getUserStats($userID);
+    $balance = getBalance($userID);
+    $stats["allTimeHigh"] = ($balance > $stats["allTimeHigh"])?$balance:$stats["allTimeHigh"];
+    if ($winLoss > 0) {
+        $stats["currentWinStreak"]++;
+        $stats["longestWinStreak"] = ($stats["currentWinStreak"] > $stats["longestWinStreak"])?$stats["currentWinStreak"]:$stats["longestWinStreak"];
+        $stats["currentLooseStreak"] = 0;
+        $stats["highestWin"] = ($winLoss > $stats["highestWin"])?$winLoss:$stats["highestWin"];
+        $stats["totalWins"]++;
+        $stats["totalWinSum"] += $winLoss;
+
+        $stats["gameStats"][$gameID]["wins"]++;
+        $stats["gameStats"][$gameID]["winSum"] += $winLoss;
+    } elseif ($winLoss < 0) {
+        $stats["currentLooseStreak"]++;
+        $stats["longestLooseStreak"] = ($stats["currentLooseStreak"] > $stats["longestLooseStreak"])?$stats["currentLooseStreak"]:$stats["longestLooseStreak"];
+        $stats["currentWinStreak"] = 0;
+        $stats["highestLoss"] = ($winLoss < $stats["highestLoss"])?$winLoss:$stats["highestLoss"];
+        $stats["totalLosses"]++;
+        $stats["totalLossSum"] += $winLoss;
+
+        $stats["gameStats"][$gameID]["looses"]++;
+        $stats["gameStats"][$gameID]["looseSum"] += $winLoss;
+    }
+
+    $conn = newSQLConnection();
+
+    $stmt = $conn->prepare("UPDATE stats SET allTimeHigh=?, longestWinStreak=?, currentWinStreak=?, longestLooseStreak=?, currentLooseStreak=?, highestWin=?, highestLoss=?, totalWins=?, totalWinSum=?, totalLosses=?, totalLossSum=? WHERE userID=?");
+    $stmt->execute([$stats["allTimeHigh"], $stats["longestWinStreak"], $stats["currentWinStreak"], $stats["longestLooseStreak"], $stats["currentLooseStreak"], $stats["highestWin"], $stats["highestLoss"], $stats["totalWins"], $stats["totalWinSum"], $stats["totalLosses"], $stats["totalLossSum"], $userID]);
+
+    $stmt = $conn->prepare("INSERT INTO history VALUES (?, ?, ?, ?)");
+    $stmt->execute([$userID, date('Y-m-d H:i:s'), $gameID, $winLoss]);
+
+    $stmt = $conn->prepare("UPDATE gameSpecificStats SET wins=?, winSum=?, looses=?, looseSum=? WHERE userID=? AND gameID=?");
+    $stmt->execute([$stats["gameStats"][$gameID]["wins"], $stats["gameStats"][$gameID]["winSum"], $stats["gameStats"][$gameID]["looses"], $stats["gameStats"][$gameID]["looseSum"], $userID, $gameID]);
+
+    $conn->close();
 }
 ?>

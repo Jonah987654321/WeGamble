@@ -38,7 +38,7 @@ function removeBid(id) {
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "Enter") {
-        biddingOpen?finishBid(currentBidID):(spinRunning?null:spin());
+        biddingOpen?finishBid(currentBidID):spin();
     }
 })
 
@@ -109,7 +109,7 @@ function placeBid(e) {
         return;
     }
     if (balance == 0) {
-        notify("Du hast kein Geld uum Wetten zu platzieren");
+        notify("Du hast kein Geld um Wetten zu platzieren");
         return;
     }
     const id = e.target.id.split("-")[1];
@@ -167,6 +167,9 @@ document.querySelectorAll(".roF").forEach((field) => {
 });
 
 function spin() {
+    if (spinRunning) {
+        return;
+    }
     spinRunning = true;
     let btn = document.getElementById("spinBtn");
     btn.disabled = true;

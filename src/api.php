@@ -4,6 +4,8 @@ use OmniRoute\Router;
 
 Router::registerPrefix("/backend");
 
+define("GID_ROULETTE", 1);
+
 Router::add("/roulette", function() {
     header("Content-Type: application/json; charset=UTF-8");
     $body = json_decode(file_get_contents('php://input'), true);
@@ -168,6 +170,8 @@ Router::add("/roulette", function() {
 
     $newBalance = $user["balance"]+$totalWinLoss;
     updateBalance($user["userID"], $newBalance);
+
+    updateStats($user["userID"], GID_ROULETTE, $totalWinLoss);
     
     http_response_code(200);
     return print(json_encode(["number" => $result, "winningBids" => $winningBids, "losingBids" => $losingBids, "totalWinLoss" => $totalWinLoss, "newBalance" => $newBalance]));
