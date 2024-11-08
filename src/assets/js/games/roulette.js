@@ -239,9 +239,16 @@ function redoLastBids(multiplier) {
     if (spinRunning) {
         return;
     }
+    let total = 0;
     bids = structuredClone(lastBids);
     for (const [key, value] of Object.entries(bids)) {
+        total += value*multiplier;
         bids[key] = value*multiplier;
+    }
+    if (total > balance) {
+        notify("Nicht genügend Geld")
+        bids = {};
+        return; 
     }
     renderBids();
 }
