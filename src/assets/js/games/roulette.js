@@ -184,6 +184,7 @@ function spin() {
         if (res.status == 204) {
             notify("Bitte platziere erst eine Wette");
             btn.disabled = false;
+            spinRunning = false;
             return;
         }
         if (res.status == 406) {
