@@ -154,9 +154,11 @@ function getUserStats($userID) {
             `totalLossSum`)
             VALUES (?,100000,0,0,0,0,'2024-11-08 19:11:30',0,0,0,0,0,0,0)");
         $stmt->execute([$userID]);
-    } else {
-        $stats = $res->fetch_assoc();
+        $stmt = $conn->prepare("SELECT * FROM stats WHERE userID=?");
+        $stmt->execute([$userID]);
+        $res = $stmt->get_result();
     }
+    $stats = $res->fetch_assoc();
 
     $stmt = $conn->prepare("SELECT gameID, timestamp, winLoss FROM history WHERE userID=? ORDER BY timestamp DESC");
     $stmt->execute([$userID]);
