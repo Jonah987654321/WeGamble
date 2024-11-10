@@ -74,6 +74,7 @@ function loginUser($uname, $pwd) {
 
     $user = $res->fetch_assoc();
 
+    getUserStats($user["userID"]); //Creating stats if not existing
     $stmt = $conn->prepare("UPDATE stats SET lastLogin=? WHERE userID=?");
     $stmt->execute([date('Y-m-d H:i:s'), $user["userID"]]);
 
