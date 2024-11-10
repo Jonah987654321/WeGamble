@@ -18,7 +18,13 @@
             require_once __DIR__."/../modules/utils.php";
             $i = 1;
             foreach ($data as $entry) {
-                echo "$i. ".$entry[1]." (".formatCurrency($entry[2])."€)<br>";
+                echo "<div class='leaderboardEntry' onclick='window.location.href=\"/profile/".$entry[0]."\";'>
+                    <div class='placing'>$i.</div>
+                    <div class='userSection'>
+                        <div class='lbUserName'>".$entry[1]."</div>
+                        <div class='lbUserBalance'>".formatCurrency($entry[2])."€</div>
+                    </div>
+                </div>";
                 $i++;
             } 
             ?>

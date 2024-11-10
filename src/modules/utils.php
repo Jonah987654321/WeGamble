@@ -8,4 +8,8 @@ function formatCurrency($balance) {
         return $balance;
     }
 }
+
+function formatDate($date) {
+    return date_format(date_create($date),"d.m.Y - H:i");
+}
 ?>

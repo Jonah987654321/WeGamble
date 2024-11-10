@@ -1,0 +1,36 @@
+body {
+    background-color: var(--dark-bg);
+    color: var(--dark-text) !important;
+}
+
+.leaderboardContainer {
+    display: flex;
+    margin-top: 80px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.leaderboardEntry {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: 1px solid white;
+    border-radius: 10px;
+    display: flex;
+    width: 25%;
+    background-color: #3B4A61;
+}
+
+@media only screen and (max-width: 481px) {
+    .leaderboardEntry {
+        width: 80%;
+    }
+}
+
+.placing {
+    font-size: 35px;
+    margin-right: 20px;
+}
+
+.lbUserName {
+    font-size: 25px;
+}

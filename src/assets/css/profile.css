@@ -1,0 +1,119 @@
+body {
+    background-color: var(--dark-bg);
+    color: var(--dark-text) !important;
+}
+
+.statsWrapper {
+    margin-top: 70px;
+}
+
+.userTop {
+    display: flex;
+    justify-content: start;
+    margin-left: 7%;
+}
+
+.userIcon {
+    width: 100px;
+    margin-right: 50px;
+}
+
+.userDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.statsUsername {
+    font-size: 50px;
+}
+
+.statsBalance {
+    font-size: 20px;
+}
+
+.statDisplayWrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.statDisplay {
+    background-color: #3B4A61;
+    width: 40%;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 10px 30px 20px 30px;
+}
+
+.historyEntry {
+    display: flex;
+    margin-top: 20px;
+}
+
+.he-icon {
+    width: 55px;
+    margin-right: 10px;
+}
+
+.he-winLoss {
+    font-size: 22px;
+}
+
+.statsLine {
+    display: flex;
+}
+
+.statEntry {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.se-DetailsContent {
+    background-color: #3f4347;
+    padding: 10px 10px;
+    width: 90%;
+}
+
+.se-DetailsTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.se-DetailsTitle i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+@media only screen and (max-width: 481px) {
+    .statDisplayWrapper {
+        flex-direction: column;
+    }
+
+    .statDisplay {
+        display: inline-block;
+        width: calc(95% - 60px);
+        margin-left: 2.5%;
+    }
+
+    .statsLine {
+        flex-direction: column;
+    }
+
+    .statEntry {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 900px) {
+    .statsLine {
+        flex-direction: column;
+    }
+
+    .statEntry {
+        width: 100%;
+    }
+}

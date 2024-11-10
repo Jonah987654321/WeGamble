@@ -114,15 +114,50 @@ function getLeaderboard() {
     return $res;
 }
 
+function getUser($userID) {
+    $conn = newSQLConnection();
+
+    $stmt = $conn->prepare("SELECT * FROM users  WHERE userID=?");
+    $stmt->execute([$userID]);
+
+    $res = $stmt->get_result();
+    if ($res->num_rows == 0) {
+        return false;
+    }
+
+    $conn->close();
+    return $res->fetch_assoc();
+}
+
 function getUserStats($userID) {
     $conn = newSQLConnection();
 
     $stmt = $conn->prepare("SELECT * FROM stats WHERE userID=?");
     $stmt->execute([$userID]);
-    $res = $stmt->get_result()->fetch_assoc();
-    $stats = $res;
+    $res = $stmt->get_result();
+    if ($res->num_rows == 0) {
+        $stmt = $conn->prepare("INSERT INTO `stats` 
+            (`userID`, 
+            `allTimeHigh`, 
+            `longestWinStreak`, 
+            `currentWinStreak`, 
+            `longestLooseStreak`, 
+            `currentLooseStreak`, 
+            `lastLogin`,
+            `highestWin`,
+            `highestLoss`,
+            `playTime`,
+            `totalWins`,
+            `totalWinSum`,
+            `totalLosses`,
+            `totalLossSum`)
+            VALUES (?,100000,0,0,0,0,'2024-11-08 19:11:30',0,0,0,0,0,0,0)");
+        $stmt->execute([$userID]);
+    } else {
+        $stats = $res->fetch_assoc();
+    }
 
-    $stmt = $conn->prepare("SELECT gameID, timestamp, winLoss FROM history WHERE userID=?");
+    $stmt = $conn->prepare("SELECT gameID, timestamp, winLoss FROM history WHERE userID=? ORDER BY timestamp DESC");
     $stmt->execute([$userID]);
     $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stats["history"] = $res;
@@ -131,8 +166,25 @@ function getUserStats($userID) {
     $stmt->execute([$userID]);
     $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $gameStats = [];
+    $missingStats = [1];
     foreach ($res as $game) {
         $gameStats[$game["gameID"]] = $game;
+        if (($key = array_search($game["gameID"], $missingStats)) !== false) {
+            unset($missingStats[$key]);
+        }
+    }
+
+    foreach ($missingStats as $ID) {
+        $stmt = $conn->prepare("INSERT INTO `gamespecificstats`
+            (`userID`,
+            `gameID`,
+            `playTime`,
+            `wins`,
+            `winSum`,
+            `looses`,
+            `looseSum`)
+            VALUES (?,?,0,0,0,0,0)");
+        $stmt->execute([$userID, $ID]);
     }
     $stats["gameStats"] = $gameStats;
 

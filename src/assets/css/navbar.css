@@ -22,6 +22,7 @@
 }
 
 .navRight {
+    color: white !important;
     flex-direction: column;
     justify-content: end !important;
 }

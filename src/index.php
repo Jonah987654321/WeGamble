@@ -62,6 +62,18 @@ Router::add("/leaderboard", function() {
     require_once "templates/leaderboard.php";
 }, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
 
+Router::add("/profile/<:id:>", function($id) {
+    $user = getUser($id);
+
+    if (!$user) {
+        return redirect("/leaderboard");
+    }
+
+    $data = getUserStats($id);
+
+    require_once "templates/profile.php";
+}, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
+
 Router::registerSubRouter("games.php");
 Router::registerSubRouter("api.php");
 
