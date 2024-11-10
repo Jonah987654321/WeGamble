@@ -176,7 +176,7 @@ function getUserStats($userID) {
     }
 
     foreach ($missingStats as $ID) {
-        $stmt = $conn->prepare("INSERT INTO `gamespecificstats`
+        $stmt = $conn->prepare("INSERT INTO `gameSpecificStats`
             (`userID`,
             `gameID`,
             `playTime`,
