@@ -82,7 +82,7 @@ Router::add("/admin", function() {
     echo '<form action="/admin" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br>
-        <label for="pwd">Name:</label>
+        <label for="pwd">Passwort:</label>
         <input type="text" id="pwd" name="pwd"><br>
         <button type="submit">Erstellen</button>
     </form>';
