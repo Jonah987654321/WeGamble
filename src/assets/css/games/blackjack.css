@@ -1,0 +1,169 @@
+*:focus {
+    outline: none;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--dark-text) !important;
+}
+
+.mainWrapper {
+    height: calc(100dvh - 75px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#startGameContainer {
+    text-align: center;
+}
+
+.betAmount {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+#betAmountInp {
+    margin-top: 10px;
+    width: calc(100% - 20px);
+    text-align: right;
+    font-size: 18px;
+    border: none;
+    background: none;
+    border-bottom: 1px solid var(--dark-text);
+    padding: 1px;
+}
+
+#startGameBtn {
+    border: none;
+    text-transform: uppercase;
+    font-size: 20px;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+    padding: 10px;
+}
+
+#startGameBtn:hover {
+    cursor: pointer;
+    background-color: var(--dark-btn-hvr);
+}
+
+#playtable {
+    width: 100%;
+    height: 100%;
+}
+
+.cardWrapper img {
+    width: 140px;
+}
+
+.dealerNotice {
+    font-size: 15px;
+    color: lightgray;
+    text-align: center;
+}
+
+.ptPart-top {
+    height: calc(40% - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding-top: 50px;
+}
+
+.ptPart-bottom {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.userBtnWrapper {
+    margin-top: 30px;
+}
+
+#inGameBtns {
+    display: flex;
+}
+
+.userBtnWrapper button {
+    margin-right: 5px;
+    border: none;
+    font-size: 18px;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+    padding: 12px;
+}
+
+.userBtnWrapper button:hover {
+    cursor: pointer;
+    background-color: var(--dark-btn-hvr);
+}
+
+.userBtnWrapper button:disabled {
+    background-color: gray;
+}
+
+#endMessage {
+    font-size: 45px;
+    transform: translateY(100%);
+    color: var(--dark-btn);
+}
+
+#betAmountDisplay {
+    padding-top: 10px;
+    font-size: 20px;
+}
+
+/* 1. Handys im Hochformat */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    .cardWrapper img {
+        width: 90px;
+    }
+
+    .userBtnWrapper button {
+        font-size: 17px;
+        padding: 10px;
+    }
+
+    #endMessage {
+        font-size: 30px;
+        transform: translateY(-35%);
+        background-color: rgba(0, 0, 0, 0.8);
+        width: 100%;
+        padding: 40px 0px;
+        text-align: center;
+    }
+
+    .betAmount {
+        width: 80%;
+        margin-left: 10%;
+    }
+
+    #inGameBtns {
+        flex-direction: column;
+    }
+
+    .buttonRow {
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+/* 2. Handys im Querformat */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+}
+
+@media screen and (min-width: 768px) and (max-width: 1300px) and (orientation: landscape) {
+    .cardWrapper img {
+        width: 100px;
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    
+}
+

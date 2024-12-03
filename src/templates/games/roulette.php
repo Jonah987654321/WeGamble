@@ -243,6 +243,7 @@
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
         <input type="hidden" value="<?php echo SERVER_PATH ?>" id="serverURLStash">
+        <input type="hidden" value="<?php echo WS_PATH ?>" id="wsURLStash">
     </body>
     <script src="../../assets/js/functions.js"></script>
     <script src="../../assets/js/overlay.js"></script>

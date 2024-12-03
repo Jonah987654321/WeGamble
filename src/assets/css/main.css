@@ -36,3 +36,7 @@
   /* forces dark color-scheme */
   color-scheme: dark;
 }
+
+.hidden {
+  display: none;
+}

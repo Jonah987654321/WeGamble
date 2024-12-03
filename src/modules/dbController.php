@@ -78,6 +78,9 @@ function loginUser($uname, $pwd) {
     $stmt = $conn->prepare("UPDATE stats SET lastLogin=? WHERE userID=?");
     $stmt->execute([date('Y-m-d H:i:s'), $user["userID"]]);
 
+    $stmt = $conn->prepare("DELETE FROM apiKeys WHERE userID=?");
+    $stmt->execute([$user["userID"]]);
+
     $conn->close();
 
     $user["apiToken"] = generateAPIToken($user["userID"]);
@@ -169,7 +172,7 @@ function getUserStats($userID) {
     $stmt->execute([$userID]);
     $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $gameStats = [];
-    $missingStats = [1];
+    $missingStats = [1, 2];
     foreach ($res as $game) {
         $gameStats[$game["gameID"]] = $game;
         if (($key = array_search($game["gameID"], $missingStats)) !== false) {
@@ -231,6 +234,40 @@ function updateStats($userID, $gameID, $winLoss) {
 
     $stmt = $conn->prepare("UPDATE gameSpecificStats SET wins=?, winSum=?, looses=?, looseSum=? WHERE userID=? AND gameID=?");
     $stmt->execute([$stats["gameStats"][$gameID]["wins"], $stats["gameStats"][$gameID]["winSum"], $stats["gameStats"][$gameID]["looses"], $stats["gameStats"][$gameID]["looseSum"], $userID, $gameID]);
+
+    $conn->close();
+}
+
+function startTime($gtID, $userID, $gameID, $startTime) {
+    $conn = newSQLConnection();
+
+    $stmt = $conn->prepare("INSERT INTO gameTimeSessions VALUES (?, ?, ?, ?)");
+    $stmt->execute([$gtID, $userID, $gameID, $startTime]);
+
+    $conn->close();
+}
+
+function endTime($gtID) {
+    $conn = newSQLConnection();
+
+    $stmt = $conn->prepare("SELECT * FROM gameTimeSessions WHERE gtID=?");
+    $stmt->execute([$gtID]);
+
+    $res = $stmt->get_result()->fetch_assoc();
+
+    $start = new DateTime($res["startTime"]);
+    $end = new DateTime();
+    $diff = $start->diff($end);
+    $diffSec = abs(($diff->h * 3600) + ($diff->i * 60) + $diff->s);
+
+    $stmt = $conn->prepare("UPDATE stats SET playTime=playTime+? WHERE userID=?");
+    $stmt->execute([$diffSec, $res["userID"]]);
+
+    $stmt = $conn->prepare("UPDATE gameSpecificStats SET playTime=playTime+? WHERE userID=?");
+    $stmt->execute([$diffSec, $res["userID"]]);
+
+    $stmt = $conn->prepare("DELETE FROM gameTimeSessions WHERE gtID=?");
+    $stmt->execute([$gtID]);
 
     $conn->close();
 }

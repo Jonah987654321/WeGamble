@@ -44,3 +44,10 @@ CREATE TABLE IF NOT EXISTS gameSpecificStats (
     looses INTEGER,
     looseSum INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS gameTimeSessions (
+    gtID VARCHAR(255),
+    userID INTEGER,
+    gameID INTEGER,
+    startTime DATETIME
+);

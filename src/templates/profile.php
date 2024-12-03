@@ -14,8 +14,8 @@
         require_once __DIR__."/../modules/utils.php";
         require_once "navbar.php";
 
-        $gameIcons = [1 => "../assets/img/icon/casino-roulette.png"];
-        $gameNames = [1 => "Roulette"];
+        $gameIcons = [1 => "../assets/img/icon/casino-roulette.png", 2 => "../assets/img/icon/blackjack.png"];
+        $gameNames = [1 => "Roulette", 2 => "Blackjack"];
         ?>
         
         <div class="statsWrapper">
@@ -37,8 +37,14 @@
                             <div class="se-DetailsContent"><?php echo formatDate($data["lastLogin"])?></div>
                         </div>
                         <div class="statEntry">
+                            <?php 
+                            $hours = floor($data["playTime"] / 3600);
+                            $minutes = floor(($data["playTime"] % 3600) / 60);
+
+                            $playTime = "{$hours}h {$minutes}min";
+                            ?>
                             <div class="se-DetailsTitle"><i class="fa-regular fa-clock"></i> Spielzeit:</div>
-                            <div class="se-DetailsContent"><?php echo str_replace(",", ".", strval(round($data["playTime"]/(60*60), 2)))?>h</div>
+                            <div class="se-DetailsContent"><?php echo $playTime?></div>
                         </div>
                     </div>
                     <div class="statsLine">

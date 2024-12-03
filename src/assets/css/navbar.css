@@ -49,3 +49,28 @@ div.username {
     margin-left: 20px;
     color: white !important;
 }
+
+.navbarMobileLandscape {
+    display: none;
+}
+
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .navbar {
+        display: none;
+    }
+
+    .navbarMobileLandscape {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+    }
+
+    .navbarMobileLandscape button {
+        font-size: 30px;
+        padding: 10px 15px;
+        border: none;
+        background-color: var(--dark-bg-scnd);
+        border-bottom-left-radius: 10px;
+    }
+}

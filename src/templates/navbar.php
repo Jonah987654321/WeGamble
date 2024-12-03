@@ -21,3 +21,6 @@
         ?>
     </div>
 </div>
+<div class="navbarMobileLandscape">
+    <button><i class="fa-solid fa-bars"></i></button>
+</div>

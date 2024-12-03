@@ -1,0 +1,195 @@
+<?php
+
+namespace GameHandler;
+
+use GameState;
+require_once "gameState.php";
+
+define("ERR_G1_MISSING_BIDS", 4);
+define("ERR_G1_BIDS_OVER_BALANCE", 5);
+
+class Roulette extends GameState {
+    public function __construct() {
+        parent::__construct(1);
+    }
+
+    public function handleData(array $body) {
+        parent::updateUserData();
+
+        if ($this->userData == false) {
+            return [
+                'type' => 'error',
+                "code" => ERR_API_TOKEN_INVALID,
+                'message' => 'Invalid or expired API token',
+            ];
+        }
+
+        if (!isset($body["bids"]) || count(array_keys($body["bids"])) == 0) {
+            return [
+                'type' => 'error',
+                "code" => ERR_G1_MISSING_BIDS,
+                'message' => 'No bids provided',
+            ];
+        }
+
+        $totalAmount = 0;
+        foreach (array_keys($body["bids"]) as $bid) {
+            $bidAmount = intval($body["bids"][$bid]);
+            if ($bidAmount < 0) {
+                return [
+                    'type' => 'error',
+                    "code" => ERR_G1_BIDS_OVER_BALANCE,
+                    'message' => 'Bids over balance',
+                ];
+            }
+            $totalAmount += $bidAmount;
+        }
+
+        if ($totalAmount > $this->userData["balance"]) {
+            return [
+                'type' => 'error',
+                "code" => ERR_G1_BIDS_OVER_BALANCE,
+                'message' => 'Bids over balance',
+            ];
+        }
+
+        $result = rand(0, 36);
+
+        $winningConditions = [
+            "0" => [0],
+            "1" => [1],
+            "2" => [2],
+            "3" => [3],
+            "4" => [4],
+            "5" => [5],
+            "6" => [6],
+            "7" => [7],
+            "8" => [8],
+            "9" => [9],
+            "10" => [10],
+            "11" => [11],
+            "12" => [12],
+            "13" => [13],
+            "14" => [14],
+            "15" => [15],
+            "16" => [16],
+            "17" => [17],
+            "18" => [18],
+            "19" => [19],
+            "20" => [20],
+            "21" => [21],
+            "22" => [22],
+            "23" => [23],
+            "24" => [24],
+            "25" => [25],
+            "26" => [26],
+            "27" => [27],
+            "28" => [28],
+            "29" => [29],
+            "30" => [30],
+            "31" => [31],
+            "32" => [32],
+            "33" => [33],
+            "34" => [34],
+            "35" => [35],
+            "36" => [36],
+            "r1" => [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
+            "r2" => [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
+            "r3" => [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34],
+            "t1" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "t2" => [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+            "t3" => [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+            "h1" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            "h2" => [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+            "ev" => [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36],
+            "ue" => [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35],
+            "black" => [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35],
+            "red" => [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+        ];
+
+        $winningMultipliers = [
+            "0" => 35,
+            "1" => 35,
+            "2" => 35,
+            "3" => 35,
+            "4" => 35,
+            "5" => 35,
+            "6" => 35,
+            "7" => 35,
+            "8" => 35,
+            "9" => 35,
+            "10" => 35,
+            "11" => 35,
+            "12" => 35,
+            "13" => 35,
+            "14" => 35,
+            "15" => 35,
+            "16" => 35,
+            "17" => 35,
+            "18" => 35,
+            "19" => 35,
+            "20" => 35,
+            "21" => 35,
+            "22" => 35,
+            "23" => 35,
+            "24" => 35,
+            "25" => 35,
+            "26" => 35,
+            "27" => 35,
+            "28" => 35,
+            "29" => 35,
+            "30" => 35,
+            "31" => 35,
+            "32" => 35,
+            "33" => 35,
+            "34" => 35,
+            "35" => 35,
+            "36" => 35,
+        
+            "r1" => 2,
+            "r2" => 2,
+            "r3" => 2,
+        
+            "t1" => 2,
+            "t2" => 2,
+            "t3" => 2,
+        
+            "h1" => 1,
+            "h2" => 1,
+        
+            "ev" => 1,
+            "ue" => 1,
+        
+            "black" => 1,
+            "red" => 1
+        ];
+
+
+        $winningBids = [];
+        $losingBids = [];
+        $totalWinLoss = 0;
+        foreach (array_keys($body["bids"]) as $bid) {
+            if (in_array($result, $winningConditions[$bid])) {
+                $winAmount = intval($body["bids"][$bid])*$winningMultipliers[$bid];
+                $winningBids[] = ["ID" => $bid, "winAmount" => $winAmount];
+                $totalWinLoss += $winAmount;
+            } else {
+                $losingBids[] = $bid;
+                $totalWinLoss -= intval($body["bids"][$bid]);
+            }
+        }
+
+        $newBalance = $this->userData["balance"]+$totalWinLoss;
+        updateBalance($this->userData["userID"], $newBalance);
+
+        updateStats($this->userData["userID"], 1, $totalWinLoss);
+
+        return [
+            "type" => "success",
+            "event" => "roulettePlaceBids",
+            "number" => $result, "winningBids" => $winningBids, "losingBids" => $losingBids, "totalWinLoss" => $totalWinLoss, "newBalance" => $newBalance
+        ];
+    }
+}
+
+?>

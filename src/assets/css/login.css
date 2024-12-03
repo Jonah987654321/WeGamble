@@ -133,3 +133,12 @@ img#logo {
 .alignRight {
     text-align: right;
 }
+
+@media screen and (max-width: 480px) {
+    .loginFieldWrap {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 100px;
+        margin-bottom: 100px;
+    }
+}

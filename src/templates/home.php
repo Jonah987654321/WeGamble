@@ -15,11 +15,25 @@
         ?>
         <div class="gameSelector">
             <div class="gameCard">
-                <p class="gameName">Roulette</p>
-                <img src="https://homburg1.de/wp-content/uploads/2022/03/Roulette-Casino-Gluecksspiel.jpg">
-                <p class="gameDesc">Erlebe den Nervenkitzel von Roulette, einem der beliebtesten Casinospiele weltweit! Setze auf dein Glück, während das Rad sich dreht und die Kugel über die Zahlen tanzt - jede Runde bietet die Chance auf große Gewinne. Wirst du der nächste Glückspilz sein, der den Jackpot knackt?</p>
-                <div class="gameButtonWrapper">
-                    <button onclick="window.location.href='/game/roulette'">Jetzt spielen</button>
+                <div class="bgImage">
+                    <img src="https://homburg1.de/wp-content/uploads/2022/03/Roulette-Casino-Gluecksspiel.jpg">
+                    <div class="gc-Overlay">
+                        <p class="gameName">Roulette</p>
+                        <div class="gameButtonWrapper">
+                            <button onclick="window.location.href='/game/roulette'">Jetzt spielen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="gameCard">
+                <div class="bgImage">
+                    <img src="https://de2.sportal365images.com/process/smp-betway-images/betway.com/27072023/f8f1c651-8fa2-424d-bee4-77979469f189.jpg">
+                    <div class="gc-Overlay">
+                        <p class="gameName">Blackjack</p>
+                        <div class="gameButtonWrapper">
+                            <button onclick="window.location.href='/game/blackjack'">Jetzt spielen</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

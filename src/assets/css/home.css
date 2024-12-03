@@ -10,37 +10,72 @@ body {
 }
 
 @media only screen and (max-width: 481px) {
+    .gameSelector {
+        flex-direction: column;
+    }
+
     .gameCard {
         width: 100% !important;
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .gameCard {
+        width: 35% !important;
     }
 }
 
 .gameCard {
     width: 25%;
-    padding: 10px;
+    height: 300px;
     border: 1px solid var(--dark-text);
+    border-radius: 10px;
+    margin-right: 20px;
+    position: relative;
+}
+
+.bgImage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.bgImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 10px;
 }
 
-.gameCard img {
+.gc-Overlay {
+    background-color: rgba(0, 0, 0, 0.548);
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    margin-bottom: 10px;
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content : center;
 }
 
 .gameName {
-    font-size: 22px;
+    font-size: 40px;
     margin-bottom: 10px;
 }
 
 .gameButtonWrapper {
     margin-top: 10px;
-    text-align: right;
+    text-align: center;
 }
 
 .gameButtonWrapper button {
     border: none;
     background-color: var(--dark-btn);
-    padding: 5px;
+    padding: 15px;
     font-size: 18px;
     color: var(--dark-btn-text)
 }
