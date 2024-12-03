@@ -108,6 +108,33 @@ Router::add("/profile/<:id:>", function($id) {
     require_once "templates/profile.php";
 }, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
 
+Router::add("/admin", function() {
+    if (OmniLogin::getUser()["userID"] != 1) {
+        return redirect("/");
+    }
+
+    echo '<form action="/admin" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br>
+        <label for="pwd">Passwort:</label>
+        <input type="text" id="pwd" name="pwd"><br>
+        <button type="submit">Erstellen</button>
+    </form>';
+}, ext: [LOGIN_REQUIRED]);
+
+Router::add("/admin", function() {
+    if (OmniLogin::getUser()["userID"] != 1) {
+        return redirect("/");
+    }
+
+    $conn = newSQLConnection();
+    $stmt = $conn->prepare("INSERT INTO users (userName, userPassword, balance) VALUES (?, ?, 100000)");
+    $stmt->execute([$_POST["name"], md5($_POST["pwd"])]);
+    $conn->close();
+
+    return redirect("/admin");
+}, method: ["POST"], ext: [LOGIN_REQUIRED]);
+
 Router::registerSubRouter("games.php");
 
 Router::run();
