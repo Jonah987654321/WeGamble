@@ -7,6 +7,8 @@ body {
     margin-top: 40px;
     display: flex;
     padding: 30px;
+    flex-wrap: wrap;
+    justify-content: start;
 }
 
 @media only screen and (max-width: 481px) {
@@ -27,12 +29,13 @@ body {
 }
 
 .gameCard {
-    width: 25%;
+    width: 23%;
     height: 300px;
     border: 1px solid var(--dark-text);
     border-radius: 10px;
     margin-right: 20px;
     position: relative;
+    margin-top: 30px;
 }
 
 .bgImage {
