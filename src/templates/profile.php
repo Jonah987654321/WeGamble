@@ -14,8 +14,8 @@
         require_once __DIR__."/../modules/utils.php";
         require_once "navbar.php";
 
-        $gameIcons = [1 => "../assets/img/icon/casino-roulette.png", 2 => "../assets/img/icon/blackjack.png"];
-        $gameNames = [1 => "Roulette", 2 => "Blackjack"];
+        $gameIcons = [1 => "../assets/img/icon/casino-roulette.png", 2 => "../assets/img/icon/blackjack.png", 3 => "../assets/img/icon/punch.png"];
+        $gameNames = [1 => "Roulette", 2 => "Blackjack", 3 => "Hit the Nick"];
         ?>
         
         <div class="statsWrapper">

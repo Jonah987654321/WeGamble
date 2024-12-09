@@ -13,4 +13,8 @@ Router::add("/blackjack", function() {
     require_once "templates/games/blackjack.php";
 }, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
 
+Router::add("/hit-the-nick", function() {
+    require_once "templates/games/hit-the-nick.php";
+}, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
+
 ?>

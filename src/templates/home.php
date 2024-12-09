@@ -53,7 +53,7 @@
                     <div class="gc-Overlay">
                         <p class="gameName">Hit the Nick</p>
                         <div class="gameButtonWrapper">
-                            <button onclick="window.location.href='/game/blackjack'">Jetzt spielen</button>
+                            <button onclick="window.location.href='/game/hit-the-nick'">Jetzt spielen</button>
                         </div>
                     </div>
                 </div>

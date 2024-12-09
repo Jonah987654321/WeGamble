@@ -97,7 +97,7 @@ conn.onmessage = function(e) {
             case 8:
                 return notify("Wetteinsatz zu hoch");
             default:
-                console.error("Unknown error occurred");
+                console.error("Unknown error occurred: "+data);
                 return;
         }
     } else if (data["type"] == "success") {
