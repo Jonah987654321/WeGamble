@@ -13,9 +13,9 @@
         <?php
 
         use OmniRoute\Extensions\OmniLogin;
+        use OmniRoute\utils\Dotenv as config;
 
         require_once __DIR__."/../navbar.php";
-        require_once __DIR__."/../../modules/config/config.php";
         ?>
 
         <div class="mainWrapper">
@@ -242,8 +242,8 @@
         </div>
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
-        <input type="hidden" value="<?php echo SERVER_PATH ?>" id="serverURLStash">
-        <input type="hidden" value="<?php echo WS_PATH ?>" id="wsURLStash">
+        <input type="hidden" value="<?php echo config::get("SERVER_PATH"); ?>" id="serverURLStash">
+        <input type="hidden" value="<?php echo config::get("WS_PATH"); ?>" id="wsURLStash">
     </body>
     <script src="../../assets/js/functions.js"></script>
     <script src="../../assets/js/overlay.js"></script>

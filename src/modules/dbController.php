@@ -1,10 +1,11 @@
 <?php 
 
-require_once "config/config.php";
+use OmniRoute\utils\Dotenv as c;
+require_once __DIR__."/../vendor/autoload.php";
 
 // Establish a new MySQL connection using the credentials from the .env config
 function newSQLConnection() {
-    return new mysqli(SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_DB, SQL_PORT);
+    return new mysqli(c::get("SQL_HOST"), c::get("SQL_USER"), c::get("SQL_PASSWORD"), c::get("SQL_DB"), c::get("SQL_PORT"));
 }
 
 function revokeToken($token) {

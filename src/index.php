@@ -2,11 +2,13 @@
 
 require "modules/dbController.php";
 require 'vendor/autoload.php';
-require_once "modules/config/config.php";
 
 use OmniRoute\Router;
 use OmniRoute\Extensions\OmniLogin;
 use OmniRoute\Extensions\Tasks;
+use OmniRoute\utils\Dotenv as config;
+
+config::loadFile(__DIR__."/../.env");
 
 function isWebSocketRunning() {
     $output = [];
@@ -38,7 +40,7 @@ function restartWebSocket() {
     exec("php " . __DIR__ . "/webSocketServer.php > /dev/null 2>&1 &");
 }
 
-if(!isWebSocketRunning() && MODE != "DEV") {
+if(!isWebSocketRunning() && config::get("MODE") == "production") {
     exec("php " . __DIR__ . "/webSocketServer.php > /dev/null 2>&1 &");
 }
 

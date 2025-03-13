@@ -5,10 +5,10 @@
     </div>
     <div class="navElem navMid">
         <?php
-        require_once __DIR__."/../modules/config/config.php";
+        use OmniRoute\utils\Dotenv as config;
         require_once __DIR__."/../modules/utils.php";
         
-        echo '<img src="'.SERVER_PATH.'/assets/img/logo.png" alt="Logo">';
+        echo '<img src="'.config::get("SERVER_PATH").'/assets/img/logo.png" alt="Logo">';
         ?>
     </div>
     <div class="navElem navRight">
