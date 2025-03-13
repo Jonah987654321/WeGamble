@@ -172,7 +172,7 @@ function getUserStats($userID) {
     $stmt->execute([$userID]);
     $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $gameStats = [];
-    $missingStats = [1, 2, 3];
+    $missingStats = [1, 2, 3, 4];
     foreach ($res as $game) {
         $gameStats[$game["gameID"]] = $game;
         if (($key = array_search($game["gameID"], $missingStats)) !== false) {

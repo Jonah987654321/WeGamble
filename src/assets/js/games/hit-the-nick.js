@@ -9,8 +9,8 @@ conn.onopen = function(e) {
 
 function resetGame() {
     document.getElementById("nick").remove();
-    document.getElementById("imgDLeft").classList.add("notActive")
-    document.getElementById("blocker").classList.add("hidden")
+    document.getElementById("imgDLeft").classList.add("notActive");
+    document.getElementById("deskBlocker").classList.add("hidden");
     document.querySelectorAll(".deskWrapper").forEach(e => {
         e.classList.remove("active");
     });
@@ -29,8 +29,8 @@ function redoGame() {
     }
 
     document.getElementById("nick").remove();
-    document.getElementById("imgDLeft").classList.add("notActive")
-    document.getElementById("blocker").classList.add("hidden")
+    document.getElementById("imgDLeft").classList.add("notActive");
+    document.getElementById("deskBlocker").classList.add("hidden");
     document.querySelectorAll(".deskWrapper").forEach(e => {
         e.classList.remove("active");
     });
@@ -52,6 +52,7 @@ function startGame() {
         return notify("Wetteinsatz zu hoch");
     }
 
+    document.getElementById("deskBlocker").classList.add("hidden");
     document.getElementById("startGameContainer").classList.add("hidden");
     document.getElementById("playtable").classList.remove("hidden");
 
@@ -65,7 +66,7 @@ function startGame() {
 function guess(sel) {
     conn.send(JSON.stringify({"event": "hitTheNick-runGame", "betAmount": bidAmount, "selection": sel}));
 
-    document.getElementById("d"+sel).classList.toggle("active")
+    document.getElementById("d"+sel).classList.toggle("active");
 }
 
 conn.onmessage = function(e) {
@@ -79,7 +80,7 @@ conn.onmessage = function(e) {
                 console.error("Missed check-in");
                 return;
             case 3:
-                console.error("Invalid data provided for check-in")
+                console.error("Invalid data provided for check-in");
                 return;
             case 6:
                 window.location.href="/logout";
@@ -111,7 +112,7 @@ conn.onmessage = function(e) {
                                                 </div>`;
             document.getElementById("d"+data["out"]).innerHTML += `<img src="../../assets/img/student.png" id="nick">`;
             document.getElementById("imgDLeft").classList.remove("notActive")
-            document.getElementById("blocker").classList.remove("hidden")
+            document.getElementById("deskBlocker").classList.remove("hidden")
         }
     } else {
         console.log(data);

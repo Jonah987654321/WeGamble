@@ -14,9 +14,11 @@ use Ratchet\WebSocket\WsServer;
 require_once "gameHandler/blackjack.php";
 require_once "gameHandler/roulette.php";
 require_once "gameHandler/hit-the-nick.php";
+require_once "gameHandler/slots.php";
 use GameHandler\Blackjack;
 use GameHandler\Roulette;
 use GameHandler\HitTheNick;
+use GameHandler\Slots;
 
 define("ERR_INVALID_JSON", 1);
 define("ERR_CHECKIN_REQUIRED", 2);
@@ -94,6 +96,9 @@ class APIServer implements MessageComponentInterface {
                                     break;
                                 case 3: //Hit the Nick
                                     $gs = new HitTheNick();
+                                    break;
+                                case 4: //Slots
+                                    $gs = new Slots();
                                     break;
                                 default: //Invalid gameID
                                     $validID = false;

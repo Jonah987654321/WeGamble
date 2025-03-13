@@ -1,9 +1,14 @@
 function formatCurrency(balance) {
-    balance = String(balance); // Konvertiere balance in einen String
-    if (balance.length > 3) { // Überprüfe, ob die Länge größer als 4 ist
+    let isNegative = balance < 0; // Überprüfe, ob die Zahl negativ ist
+    balance = String(Math.abs(balance)); // Konvertiere die Zahl in einen String und entferne das Vorzeichen
+    if (balance.length > 3) { // Überprüfe, ob die Länge größer als 3 ist
         balance = balance.split("").reverse().join(""); // Drehe den String um
         balance = balance.match(/.{1,3}/g); // Teile den umgedrehten String in 3er-Gruppen auf
-        return balance.join(".").split("").reverse().join(""); // Verbinde mit Punkt und drehe zurück
+        balance = balance.join(".").split("").reverse().join(""); // Verbinde mit Punkt und drehe zurück
+    }
+    
+    if (isNegative) {
+        return `-${balance}`; // Wenn die Zahl negativ war, fügen wir das Minuszeichen wieder hinzu
     } else {
         return balance;
     }

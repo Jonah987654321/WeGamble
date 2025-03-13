@@ -1,0 +1,169 @@
+*:focus {
+    outline: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.mainWrapper {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.slotWrapper {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.slotGrid {
+    margin-top: 30px;
+    border: 30px solid var(--dark-btn-hvr);
+    border-radius: 20px;
+}
+
+.slotRow {
+    display: flex;
+    background-color: #6A0DAD;
+}
+
+.slotRoller {
+    margin: 10px 20px;
+    position: relative;
+    height: 150px;
+    width: 150px;
+    overflow: hidden;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.05) 80%);
+    border-radius: 30px;
+}
+
+.slotRoller img {
+    position: relative;
+    width: 120px;
+    z-index: 2;
+}
+
+.sRI {
+    margin-top: 15px;
+}
+
+.inputWrapper {
+    background-color: var(--dark-btn-hvr);
+    display: flex;
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 50px;
+    padding: 10px;
+    border-radius: 30px;
+}
+
+.iw-left *, .iw-right, .iw-right * {
+    color: var(--light-text) !important;
+}
+
+.iw-left {
+    position: relative;
+}
+
+.iw-left td {
+    padding: 8px;
+    font-size: 18px;
+}
+
+.tdRight {
+    padding-left: 20px;
+}
+
+#betInput {
+    background-color: var(--dark-btn-hvr);
+    border: none;
+    border-bottom: 1px solid black;
+    text-align: right;
+    font-size: 16px;
+    padding: 2px;
+    width: 100px;
+}
+
+.iw-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    flex-direction: column;
+}
+
+#spinIndicWrapper.attention {
+    border: 3px solid red;
+    border-radius: 4px;
+}
+
+.iwRightField {
+    display: flex;
+    padding: 4px;
+    width: 80%;
+    margin-left: 10%;
+}
+
+.iwRightField div {
+    width: 50%;
+}
+
+.iwRightField div:not(.iwRight_LeftField) {
+    text-align: left;
+    padding-left: 30px;
+}
+
+.iwRight_LeftField {
+    text-align: right;
+}
+
+#betInputWrapper.disabled * {
+    color: rgb(110, 110, 110) !important;
+}
+
+#betInputWrapper.disabled input {
+    border-bottom: 1px solid rgb(110, 110, 110);
+}
+
+#betInputBlocker:hover {
+    cursor: not-allowed;
+}
+
+.iw-mid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.iw-mid button {
+    font-size: 30px;
+    padding: 20px 40px;
+    border: none;
+    background-color: #004080;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.iw-mid button:hover {
+    cursor: pointer;
+    background-color: #073768;
+}
+
+.iw {
+    width: 33%;
+    text-align: center;
+}

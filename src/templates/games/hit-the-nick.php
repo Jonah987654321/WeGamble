@@ -42,7 +42,7 @@
                         <div class="deskWrapper" id="d7" onclick="guess(7);"><img src="../../assets/img/desk.png" class="desk"></div>
                         <div class="deskWrapper" id="d8" onclick="guess(8);"><img src="../../assets/img/desk.png" class="desk"></div>
                         <div class="deskWrapper" id="d9" onclick="guess(9);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div id="blocker" class="hidden"></div>
+                        <div class="blocker" id="deskBlocker" class="hidden"></div>
                     </div>
                     <div class="dealer">
                         <div id="msgTop">
