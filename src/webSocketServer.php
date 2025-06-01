@@ -2,8 +2,12 @@
 
 error_reporting(E_ALL);
 
-require "modules/dbController.php";
 require "vendor/autoload.php";
+use OmniRoute\utils\Dotenv as config;
+
+config::loadFile(__DIR__."/../.env");
+
+require "modules/dbController.php";
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
