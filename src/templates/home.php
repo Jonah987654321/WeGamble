@@ -16,7 +16,7 @@
         <div class="gameSelector">
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://homburg1.de/wp-content/uploads/2022/03/Roulette-Casino-Gluecksspiel.jpg">
+                    <img src="/assets/img/gameThumbs/roulette.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Roulette</p>
                         <div class="gameButtonWrapper">
@@ -27,7 +27,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://de2.sportal365images.com/process/smp-betway-images/betway.com/27072023/f8f1c651-8fa2-424d-bee4-77979469f189.jpg">
+                    <img src="/assets/img/gameThumbs/blackjack.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Blackjack</p>
                         <div class="gameButtonWrapper">
@@ -38,7 +38,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://www.egt.com/wp-content/uploads/2023/07/what-is-a-slot-machine.jpeg">
+                    <img src="/assets/img/gameThumbs/slots.jpeg">
                     <div class="gc-Overlay">
                         <p class="gameName">Slots</p>
                         <div class="gameButtonWrapper">
@@ -49,7 +49,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://www.teachhub.com/wp-content/uploads/2020/05/Classroom-Management-for-an-Effective-Learning-Environment-768x512.jpg">
+                    <img src="/assets/img/gameThumbs/hitTheNick.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Hit the Nick</p>
                         <div class="gameButtonWrapper">
@@ -60,7 +60,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://images.t3n.de/news/wp-content/uploads/2023/04/Poker.jpg?class=structuredData-medium">
+                    <img src="/assets/img/gameThumbs/poker.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Poker</p>
                         <div class="gameButtonWrapper">
@@ -71,7 +71,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://media.istockphoto.com/id/1498649784/de/foto/herunterfallen-roter-finanzchart-hintergrund-3d-rendering.jpg?s=612x612&w=0&k=20&c=nw7MFFBDDx-s2M5TGUWO7xUdj1P_CwOCC6OdraMKDEo=">
+                    <img src="/assets/img/gameThumbs/crasher.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Crasher</p>
                         <div class="gameButtonWrapper">
@@ -82,7 +82,7 @@
             </div>
             <div class="gameCard">
                 <div class="bgImage">
-                    <img src="https://jassverzeichnis.ch/wp-content/uploads/2024/05/Meiern-Titelbild.jpg">
+                    <img src="/assets/img/gameThumbs/meiern.jpg">
                     <div class="gc-Overlay">
                         <p class="gameName">Meiern</p>
                         <div class="gameButtonWrapper">

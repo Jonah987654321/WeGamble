@@ -110,7 +110,7 @@ conn.onmessage = function(e) {
             document.getElementById("msgTop").innerHTML = `<div speech-bubble pbottom aright>
                                                     <p>${newMsg}</p>
                                                 </div>`;
-            document.getElementById("d"+data["out"]).innerHTML += `<img src="../../assets/img/student.png" id="nick">`;
+            document.getElementById("d"+data["out"]).innerHTML += `<img src="../../assets/img/hitTheNick/student.png" id="nick">`;
             document.getElementById("imgDLeft").classList.remove("notActive")
             document.getElementById("deskBlocker").classList.remove("hidden")
         }

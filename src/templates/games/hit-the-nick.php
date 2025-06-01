@@ -33,15 +33,15 @@
                         </div>
                     </div>
                     <div class="allDesks hidden leftPart" id="playtable">
-                        <div class="deskWrapper" id="d1" onclick="guess(1);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d2" onclick="guess(2);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d3" onclick="guess(3);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d4" onclick="guess(4);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d5" onclick="guess(5);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d6" onclick="guess(6);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d7" onclick="guess(7);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d8" onclick="guess(8);"><img src="../../assets/img/desk.png" class="desk"></div>
-                        <div class="deskWrapper" id="d9" onclick="guess(9);"><img src="../../assets/img/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d1" onclick="guess(1);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d2" onclick="guess(2);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d3" onclick="guess(3);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d4" onclick="guess(4);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d5" onclick="guess(5);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d6" onclick="guess(6);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d7" onclick="guess(7);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d8" onclick="guess(8);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
+                        <div class="deskWrapper" id="d9" onclick="guess(9);"><img src="../../assets/img/hitTheNick/desk.png" class="desk"></div>
                         <div class="blocker" id="deskBlocker" class="hidden"></div>
                     </div>
                     <div class="dealer">
@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                             <div id="imgDRight">
-                                <img src="../../assets/img/bald-man.png">
+                                <img src="../../assets/img/hitTheNick/bald-man.png">
                             </div>
                         </div>
                     </div>
