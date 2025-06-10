@@ -5,8 +5,6 @@ namespace GameHandler;
 use GameState;
 require_once "gameState.php";
 
-require_once __DIR__."/../modules/dbController.php";
-
 define("ERR_G4_BID_MISSING", 14);
 define("ERR_G4_BIDS_OVER_BALANCE", 15);
 
@@ -14,7 +12,7 @@ class Slots extends GameState {
     private array $freeSpins;
 
     public function __construct() {
-        parent::__construct(4);
+        parent::__construct(GID_SLOTS);
         $this->freeSpins = [];
     }
 

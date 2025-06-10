@@ -5,8 +5,6 @@ namespace GameHandler;
 use GameState;
 require_once "gameState.php";
 
-require_once __DIR__."/../modules/dbController.php";
-
 define("ERR_G2_BID_MISSING", 7);
 define("ERR_G2_BIDS_OVER_BALANCE", 8);
 define("ERR_G2_MISSING_ACTION", 9);
@@ -42,7 +40,7 @@ class Blackjack extends GameState {
     private bool $secondDealerCardShown;
 
     public function __construct() {
-        parent::__construct(2);
+        parent::__construct(GID_BLACKJACK);
         $this->cleanSetup();
     }
 

@@ -10,7 +10,7 @@ define("ERR_G1_BIDS_OVER_BALANCE", 5);
 
 class Roulette extends GameState {
     public function __construct() {
-        parent::__construct(1);
+        parent::__construct(GID_ROULETTE);
     }
 
     public function handleData(array $body) {

@@ -5,15 +5,13 @@ namespace GameHandler;
 use GameState;
 require_once "gameState.php";
 
-require_once __DIR__."/../modules/dbController.php";
-
 define("ERR_G3_BID_MISSING", 11);
 define("ERR_G3_BIDS_OVER_BALANCE", 12);
 define("ERR_G3_NO_SELECTION", 13);
 
 class HitTheNick extends GameState {
     public function __construct() {
-        parent::__construct(3);
+        parent::__construct(GID_HITTHENICK);
     }
 
     public function handleData(array $data) {
