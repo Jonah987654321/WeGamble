@@ -1,9 +1,11 @@
 <?php
 
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+
+require_once __DIR__."/../modules/logging.php";
 
 require_once "gameHandler/blackjack.php";
 require_once "gameHandler/roulette.php";
@@ -20,20 +22,22 @@ class APIServer implements MessageComponentInterface {
     protected $clients;
     private array $gameStates;
     private GsCache $cache;
+    private $log;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         $this->gameStates = [];
         $this->cache = new GsCache();
+        $this->log = getLogger(LOG_WEBSOCKET, true);
 
-        echo "Server constructed";
+        $this->log->info("Server constructed");
     }
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
-        echo "New connection! ({$conn->resourceId})\n";
+        $this->log->info("New connection opened", ["remoteAddress" => $conn->remoteAddress, "resourceID" => $conn->resourceId]);
     }
 
     public function onMessage(ConnectionInterface $client, $msg) {
@@ -41,7 +45,7 @@ class APIServer implements MessageComponentInterface {
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             // Received JSON is invalid, close connection
-            echo "Invalid JSON received\n";
+            $this->log->info("Invalid JSON received", ["resourceID" => $client->resourceId, "received" => $msg]);
             $response = [
                 'type' => 'error',
                 "code" => ERR_INVALID_JSON,
@@ -182,11 +186,28 @@ class APIServer implements MessageComponentInterface {
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        echo "Connection {$conn->resourceId} has disconnected\n";
+        $this->log->info("Connection disconnected", ["remoteAddress" => $conn->remoteAddress, "resourceID" => $conn->resourceId]);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
-        echo "An error has occurred: {$e->getMessage()}\n";
+        $this->log->error("An error has occurred", [
+            "resourceID" => $conn->resourceId,
+            'message' => $e->getMessage(),
+            'code'    => $e->getCode(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+        ]);
+        
+        try {
+            $conn->send(json_encode([
+                            'type' => 'error',
+                            "code" => 500,
+                            'message' => 'Internal server error',
+            ]));
+        } catch (\Exception $e) {
+            $this->log->warning("Failed to deliver closing error message to client", ["resourceID" => $conn->resourceId]);
+        }
 
         $conn->close();
     }

@@ -1,6 +1,7 @@
 {
     "require": {
         "jonahh/omniroute": "^1.2",
-        "cboden/ratchet": "^0.4.4"
+        "cboden/ratchet": "^0.4.4",
+        "monolog/monolog": "^3.9"
     }
 }
