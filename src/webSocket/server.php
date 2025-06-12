@@ -28,7 +28,7 @@ class APIServer implements MessageComponentInterface {
         $this->clients = new \SplObjectStorage;
         $this->gameStates = [];
         $this->cache = new GsCache();
-        $this->log = getLogger(LOG_WEBSOCKET, true);
+        $this->log = getLogger(LOG_WEBSOCKET);
 
         $this->log->info("Server constructed");
     }
@@ -37,7 +37,7 @@ class APIServer implements MessageComponentInterface {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
-        $this->log->info("New connection opened", ["remoteAddress" => $conn->remoteAddress, "resourceID" => $conn->resourceId]);
+        $this->log->info("New connection opened", ["resourceID" => $conn->resourceId, "remoteAddress" => $conn->remoteAddress]);
     }
 
     public function onMessage(ConnectionInterface $client, $msg) {
@@ -45,7 +45,7 @@ class APIServer implements MessageComponentInterface {
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             // Received JSON is invalid, close connection
-            $this->log->info("Invalid JSON received", ["resourceID" => $client->resourceId, "received" => $msg]);
+            $this->log->warning("Invalid JSON received", ["resourceID" => $client->resourceId, "received" => $msg]);
             $response = [
                 'type' => 'error',
                 "code" => ERR_INVALID_JSON,
@@ -60,6 +60,7 @@ class APIServer implements MessageComponentInterface {
 
             if (!key_exists("type", $data) || $data["type"] != "check-in") {
                 // Client does not provide check-in, close connection
+                $this->log->warning("Client didn't check-in", ["resourceID" => $client->resourceId, "JSON" => $data]);
                 $response = [
                     'type' => 'error',
                     "code" => ERR_CHECKIN_REQUIRED,
@@ -71,6 +72,7 @@ class APIServer implements MessageComponentInterface {
 
             if (!key_exists("apiKey", $data) || !key_exists("gameID", $data)) {
                 // Client missing apiKey or gameID for check-in, close connection
+                $this->log->warning("Client missing required check-in data", ["resourceID" => $client->resourceId, "JSON" => $data]);
                 $response = [
                     'type' => 'error',
                     "code" => ERR_CHECKIN_DATA_INVALID,
@@ -85,6 +87,7 @@ class APIServer implements MessageComponentInterface {
 
             if (!$userData) {
                 // User data could not be fetched -> api key invalid
+                $this->log->warning("Client tried check-in with invalid API key", ["resourceID" => $client->resourceId, "JSON" => $data]);
                 $response = [
                     'type' => 'error',
                     "code" => ERR_API_TOKEN_INVALID,
@@ -106,6 +109,8 @@ class APIServer implements MessageComponentInterface {
 
                 // Start game session for time played stats
                 startTime($gs->getID(), $gs->getUserData()["userID"], $data["gameID"], date('Y-m-d H:i:s'));
+
+                $this->log->info("Gamestate restored from cache", ["resourceID" => $client->resourceId, "userID" => $userData["userID"], "gameID" => $data["gameID"]]);
 
                 $response = [
                     "type" => "success",
@@ -137,6 +142,7 @@ class APIServer implements MessageComponentInterface {
 
                 if (!$validID) {
                     // Provided gameID is invalid, close connection
+                    $this->log->warning("Client tried check-in with invalid game ID", ["resourceID" => $client->resourceId, "JSON" => $data]);
                     $response = [
                         'type' => 'error',
                         "code" => ERR_CHECKIN_DATA_INVALID,
@@ -150,6 +156,9 @@ class APIServer implements MessageComponentInterface {
                 $this->gameStates[$client->resourceId] = $gs;
                 $gs->checkIn($data["apiKey"]);
                 startTime($gs->getID(), $gs->getUserData()["userID"], $data["gameID"], $gs->getOpenedOn());
+
+                $this->log->info("New gamestate successfully checked-in", ["resourceID" => $client->resourceId, "userID" => $userData["userID"], "gameID" => $data["gameID"]]);
+
                 $response = [
                     "type" => "success",
                     "event" => "check-in",
@@ -160,6 +169,7 @@ class APIServer implements MessageComponentInterface {
         } else {
             // Client is already checked in, let the game state handle the data
             $response = $this->gameStates[$client->resourceId]->handleData($data);
+            $this->log->debug("Received data handled by gamestate", ["resourceID" => $client->resourceId, "JSON" => $data, "response" => $response]);
             $client->send(json_encode($response));
         }
     }
@@ -171,7 +181,8 @@ class APIServer implements MessageComponentInterface {
             $gs = $this->gameStates[$conn->resourceId];
 
             // Check if gameState wants to be cached
-            if ($gs->cacheOnDc()) {
+            $doCache = $gs->cacheOnDc();
+            if ($doCache) {
                 $gs->onCache();
                 $this->cache->store($gs);
             } else {
@@ -186,7 +197,7 @@ class APIServer implements MessageComponentInterface {
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        $this->log->info("Connection disconnected", ["remoteAddress" => $conn->remoteAddress, "resourceID" => $conn->resourceId]);
+        $this->log->info("Connection disconnected", ["resourceID" => $conn->resourceId, "remoteAddress" => $conn->remoteAddress, "cached?" => $doCache]);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
