@@ -175,6 +175,7 @@ class APIServer implements MessageComponentInterface {
     }
 
     public function onClose(ConnectionInterface $conn) {
+        $doCache = false;
         if (key_exists($conn->resourceId, $this->gameStates)) {
             // Client was checked in, end session & stats
             endTime($this->gameStates[$conn->resourceId]->getID());

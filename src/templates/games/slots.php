@@ -112,6 +112,7 @@
         <input type="hidden" value="<?php echo config::get("SERVER_PATH"); ?>" id="serverURLStash">
         <input type="hidden" value="<?php echo config::get("WS_PATH"); ?>" id="wsURLStash">
     </body>
+    <script src="../../assets/js/wsClient.js"></script>
     <script src="../../assets/js/functions.js"></script>
     <script src="../../assets/js/overlay.js"></script>
     <script src="../../assets/js/games/slots.js"></script>

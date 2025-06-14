@@ -1,12 +1,40 @@
-var conn = new WebSocket(document.getElementById("wsURLStash").value);
+// Defining relevant variables for the websocket
+const wsURL = document.getElementById("wsURLStash").value;
+const apiKey = document.getElementById("apiTokenStash").value;
+const gameID = 3;
 
-var balance = Number(document.getElementById("userBalanceStash").value);
-var bidAmount = 0
+const ws = new WsClient(wsURL, gameID, apiKey);
 
-conn.onopen = function(e) {
-    conn.send(JSON.stringify({"type": "check-in", "apiKey": document.getElementById("apiTokenStash").value, "gameID": 3}));
-};
+// Registering error codes
+ws.registerErrorCode(11, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
+ws.registerErrorCode(12, (data) => {notify("Wetteinsatz zu hoch");});
+ws.registerErrorCode(13, (data) => {notify("Auswahl fehlt");});
 
+// Registering game events
+ws.registerSuccessEvent("hitTheNick-runGame", (data) => {
+    let newBalance = data["newBalance"];
+    balance = newBalance;
+    let totalBalanceEl = document.getElementById("balanceDisplay");
+    let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
+    (newBalance > startAnimBalance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
+
+    let newMsg = (data["result"]=="win")?"Du hast "+formatCurrency(bidAmount*8)+"€ gewonnen":"Du hast "+formatCurrency(bidAmount)+"€ verloren";
+    document.getElementById("msgTop").innerHTML = `<div speech-bubble pbottom aright>
+                                            <p>${newMsg}</p>
+                                        </div>`;
+    document.getElementById("d"+data["out"]).innerHTML += `<img src="../../assets/img/hitTheNick/student.png" id="nick">`;
+    document.getElementById("imgDLeft").classList.remove("notActive");
+    document.getElementById("deskBlocker").classList.remove("hidden");
+});
+
+// Starting ws connection
+ws.startConnection();
+
+// Game relevant variables
+let balance = Number(document.getElementById("userBalanceStash").value);
+let bidAmount = 0;
+
+// Function to reset the page for a new game
 function resetGame() {
     document.getElementById("nick").remove();
     document.getElementById("imgDLeft").classList.add("notActive");
@@ -23,6 +51,7 @@ function resetGame() {
     document.getElementById("playtable").classList.add("hidden");
 }
 
+// Function to initiate a new game with the same balance as the last
 function redoGame() {
     if (balance < bidAmount) {
         return notify("Nicht mehr genug Geld");
@@ -41,6 +70,7 @@ function redoGame() {
                             </div>`;
 }
 
+// Start a new game with the provided bet amount
 function startGame() {
     bidAmount = Number(document.getElementById("betAmountInp").value);
     
@@ -63,58 +93,9 @@ function startGame() {
                             </div>`;
 }
 
+// Function to send a guess to the websocket
 function guess(sel) {
-    conn.send(JSON.stringify({"event": "hitTheNick-runGame", "betAmount": bidAmount, "selection": sel}));
+    ws.sendAsJson({"event": "hitTheNick-runGame", "betAmount": bidAmount, "selection": sel});
 
     document.getElementById("d"+sel).classList.toggle("active");
 }
-
-conn.onmessage = function(e) {
-    data = JSON.parse(e.data);
-    if (data["type"] == "error") {
-        switch (data["code"]) {
-            case 1:
-                console.error("Invalid JSON given to ws");
-                return;
-            case 2:
-                console.error("Missed check-in");
-                return;
-            case 3:
-                console.error("Invalid data provided for check-in");
-                return;
-            case 6:
-                window.location.href="/logout";
-                return;
-            case 11:
-                return notify("Bitte gib erst einen Wetteinsatz ein");
-            case 12:
-                return notify("Wetteinsatz zu hoch");
-            case 13:
-                return notify("Auswahl fehlt");
-            default:
-                console.error("Unknown error occurred: "+data);
-                return;
-        }
-    } else if (data["type"] == "success") {
-        console.log(data)
-        if (data["event"] == "check-in") {
-            console.info("WS connection established");
-        } else if (data["event"] == "hitTheNick-runGame") {
-            let newBalance = data["newBalance"];
-            balance = newBalance;
-            let totalBalanceEl = document.getElementById("balanceDisplay");
-            let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
-            (newBalance > startAnimBalance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
-
-            let newMsg = (data["result"]=="win")?"Du hast "+formatCurrency(bidAmount*8)+"€ gewonnen":"Du hast "+formatCurrency(bidAmount)+"€ verloren";
-            document.getElementById("msgTop").innerHTML = `<div speech-bubble pbottom aright>
-                                                    <p>${newMsg}</p>
-                                                </div>`;
-            document.getElementById("d"+data["out"]).innerHTML += `<img src="../../assets/img/hitTheNick/student.png" id="nick">`;
-            document.getElementById("imgDLeft").classList.remove("notActive")
-            document.getElementById("deskBlocker").classList.remove("hidden")
-        }
-    } else {
-        console.log(data);
-    }
-};
