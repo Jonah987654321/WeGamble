@@ -1,11 +1,88 @@
-var conn = new WebSocket(document.getElementById("wsURLStash").value);
+// Getting user balance
+let balance = Number(document.getElementById("userBalanceStash").value);
 
-var balance = Number(document.getElementById("userBalanceStash").value);
+// ===== Defining relevant variables for the websocket =====
+const wsURL = document.getElementById("wsURLStash").value;
+const apiKey = document.getElementById("apiTokenStash").value;
+const gameID = 2;
 
-conn.onopen = function(e) {
-    conn.send(JSON.stringify({"type": "check-in", "apiKey": document.getElementById("apiTokenStash").value, "gameID": 2}));
-};
+const ws = new WsClient(wsURL, gameID, apiKey);
 
+
+// ===== Registering error codes =====
+ws.registerErrorCode(7, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
+ws.registerErrorCode(8, (data) => {notify("Wetteinsatz zu hoch");});
+
+
+// ===== Registering game state restoring =====
+ws.setGameStateRestoreHandler((data) => {
+    // Hide the bet amount input & show the main playtable, set the bet amount from the restored gs
+    document.getElementById("startGameContainer").classList.add("hidden");
+    document.getElementById("playtable").classList.remove("hidden");
+    document.getElementById("betAmountDisplay").innerHTML = formatCurrency(data["restoredData"]["betAmount"])+"€";
+
+    // Restore player & dealer cards
+    data["restoredData"]["userCards"].forEach(e => {
+        document.getElementById("userCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`;
+    });
+    data["restoredData"]["dealerCards"].forEach(e => {
+        document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`;
+    });
+
+    // The last dealer card is still hidden, so display the back of the card
+    if (!data["restoredData"]["dealerCardShown"]) {
+        document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" id="dealerHoleCard">`;
+    }
+
+    // Only enable the buttons that are possible to be pushed next
+    setNextButtons(data["restoredData"]["possibleNext"]);
+
+    // Update the balance, because we need to add the bet amount again (because we remove it on disconnect)
+    document.getElementById("balanceDisplay").innerHTML = formatCurrency(data["restoredData"]["balance"])+"€";
+});
+
+// ===== Registering game events =====
+ws.registerSuccessEvent("initGame", (data ) => {
+    // Hide the bet amount input & show the main playtable
+    document.getElementById("startGameContainer").classList.add("hidden");
+    document.getElementById("playtable").classList.remove("hidden");
+
+    // Show the new cards
+    animateCards(data["gameUpdates"]["newCards"]);
+    if (data["gameData"]["gameRunning"]) {
+        // The last dealer card is still hidden, so display the back of the card
+        animateCards([{"type": 2, "card": "blue_back"}]);
+
+        // Only enable the buttons that are possible to be pushed next
+        setNextButtons(data["gameUpdates"]["possibleNext"]);
+    } else {
+        endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+    }
+});
+ws.registerSuccessEvent("surrender", (data) => {endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);});
+ws.registerSuccessEvent("hit", (data) => {
+    // Display new cards
+    animateCards(data["gameUpdates"]["newCards"]);
+
+    if (data["gameData"]["gameRunning"]) {
+        // Only enable the buttons that are possible to be pushed next
+        setNextButtons(data["gameUpdates"]["possibleNext"]);
+    } else {
+        endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+    }
+});
+ws.registerSuccessEvent("stand", (data) => {
+    document.getElementById("dealerHoleCard").remove();
+    animateCards(data["gameUpdates"]["newCards"]);
+    endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+});
+
+
+// Starting ws connection
+ws.startConnection();
+
+
+// ===== Button onClick Functions =====
 function startGame() {
     let bidAmount = Number(document.getElementById("betAmountInp").value);
     
@@ -18,13 +95,31 @@ function startGame() {
     }
 
     document.getElementById("betAmountDisplay").innerHTML = formatCurrency(bidAmount)+"€";
-    conn.send(JSON.stringify({"type": "initGame", "betAmount": bidAmount}));
+    ws.sendAsJson({"type": "initGame", "betAmount": bidAmount});
 }
 
+function surrender() {
+    ws.sendAsJson({"type": "surrender"});
+}
+
+function stand() {
+    ws.sendAsJson({"type": "stand"});
+}
+
+function hit() {
+    ws.sendAsJson({"type": "hit"});
+}
+
+function doubleDown() {
+    ws.sendAsJson({"type": "doubleDown"});
+}
+
+
+// ===== Helper Functions for manipulating HTML =====
 function animateCards(cards) {
     cards.forEach(c => {
-        cardElement = `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${c["card"]}.png" ${(c["card"]=="blue_back")?'id="dealerHoleCard"':''}>`;
-        wrapper = (c["type"]==1)?document.getElementById("userCards"):document.getElementById("dealerCards");
+        const cardElement = `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${c["card"]}.png" ${(c["card"]=="blue_back")?'id="dealerHoleCard"':''}>`;
+        const wrapper = (c["type"]==1)?document.getElementById("userCards"):document.getElementById("dealerCards");
         wrapper.innerHTML += cardElement;
     });
 }
@@ -40,9 +135,19 @@ function endGame(message, newBalance) {
     let totalBalanceEl = document.getElementById("balanceDisplay");
     let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
     (newBalance > startAnimBalance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
+    balance = newBalance;
 
     document.getElementById("inGameBtns").classList.add("hidden");
     document.getElementById("postGameBtns").classList.remove("hidden");
+}
+
+function setNextButtons(possibleNext) {
+    document.querySelectorAll(".uaBtn").forEach(element => {
+        element.disabled = true;
+    });
+    possibleNext.forEach(element => {
+        document.getElementById("uaBtn-"+element).disabled = false;
+    });
 }
 
 function resetBoard() {
@@ -59,122 +164,3 @@ function resetBoard() {
     document.getElementById("inGameBtns").classList.remove("hidden");
     document.getElementById("postGameBtns").classList.add("hidden");
 }
-
-function surrender() {
-    conn.send(JSON.stringify({"type": "surrender"}));
-}
-
-function stand() {
-    conn.send(JSON.stringify({"type": "stand"}));
-}
-
-function hit() {
-    conn.send(JSON.stringify({"type": "hit"}));
-}
-
-function doubleDown() {
-    conn.send(JSON.stringify({"type": "doubleDown"}));
-}
-
-conn.onmessage = function(e) {
-    data = JSON.parse(e.data);
-    if (data["type"] == "error") {
-        switch (data["code"]) {
-            case 1:
-                console.error("Invalid JSON given to ws");
-                return;
-            case 2:
-                console.error("Missed check-in");
-                return;
-            case 3:
-                console.error("Invalid data provided for check-in")
-                return;
-            case 6:
-                window.location.href="/logout";
-                return;
-            case 7:
-                return notify("Bitte gib erst einen Wetteinsatz ein");
-            case 8:
-                return notify("Wetteinsatz zu hoch");
-            default:
-                console.error("Unknown error occurred: "+data);
-                return;
-        }
-    } else if (data["type"] == "success") {
-        console.log(data)
-        if (data["event"] == "check-in") {
-            console.info("WS connection established");
-
-            if (data["restored"]) {
-                document.getElementById("startGameContainer").classList.add("hidden");
-                document.getElementById("playtable").classList.remove("hidden");
-                document.getElementById("betAmountDisplay").innerHTML = formatCurrency(data["restoredData"]["betAmount"])+"€";
-
-                data["restoredData"]["userCards"].forEach(e => {
-                    document.getElementById("userCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`
-                });
-
-                data["restoredData"]["dealerCards"].forEach(e => {
-                    document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`
-                });
-
-                if (!data["restoredData"]["dealerCardShown"]) {
-                    document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" id="dealerHoleCard">`;
-                }
-
-                document.querySelectorAll(".uaBtn").forEach(element => {
-                    element.disabled = true;
-                });
-                data["restoredData"]["possibleNext"].forEach(element => {
-                    document.getElementById("uaBtn-"+element).disabled = false;
-                });
-
-                document.getElementById("balanceDisplay").innerHTML = formatCurrency(data["restoredData"]["balance"])+"€"
-            }
-        }
-
-        if (data["event"] == "initGame") {
-            document.getElementById("startGameContainer").classList.add("hidden");
-            document.getElementById("playtable").classList.remove("hidden");
-            animateCards(data["gameUpdates"]["newCards"]);
-            if (data["gameData"]["gameRunning"]) {
-                animateCards([{"type": 2, "card": "blue_back"}]);
-
-                document.querySelectorAll(".uaBtn").forEach(element => {
-                    element.disabled = true;
-                });
-                data["gameUpdates"]["possibleNext"].forEach(element => {
-                    document.getElementById("uaBtn-"+element).disabled = false;
-                });
-            } else {
-                endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
-            }
-        }
-
-        if (data["event"] == "surrender") {
-            endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
-        }
-
-        if (data["event"] == "hit") {
-            animateCards(data["gameUpdates"]["newCards"]);
-            if (data["gameData"]["gameRunning"]) {
-                document.querySelectorAll(".uaBtn").forEach(element => {
-                    element.disabled = true;
-                });
-                data["gameUpdates"]["possibleNext"].forEach(element => {
-                    document.getElementById("uaBtn-"+element).disabled = false;
-                });
-            } else {
-                endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
-            }
-        }
-
-        if (data["event"] == "stand") {
-            document.getElementById("dealerHoleCard").remove();
-            animateCards(data["gameUpdates"]["newCards"]);
-            endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
-        }
-    } else {
-        console.log(data);
-    }
-};
