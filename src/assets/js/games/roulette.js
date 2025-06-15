@@ -1,15 +1,60 @@
-var conn = new WebSocket(document.getElementById("wsURLStash").value);
+// ===== Defining relevant variables for the websocket =====
+const wsURL = document.getElementById("wsURLStash").value;
+const apiKey = document.getElementById("apiTokenStash").value;
+const gameID = 1;
 
-conn.onopen = function(e) {
-    conn.send(JSON.stringify({"type": "check-in", "apiKey": document.getElementById("apiTokenStash").value, "gameID": 1}));
-};
+const ws = new WsClient(wsURL, gameID, apiKey);
 
-var bids = {};
-var lastBids = {};
-var balance = Number(document.getElementById("userBalanceStash").value);
-var biddingOpen = false;
-var currentBidID = null;
-var spinRunning = false;
+// Registering error codes
+ws.registerErrorCode(4, (data) => {
+    notify("Bitte platziere erst eine Wette");
+    document.getElementById("spinBtn").disabled = false;
+    spinRunning = false;
+});
+ws.registerErrorCode(5, (data) => {
+    notify("Wetten ungültig, bitte überprüfen");
+    document.getElementById("spinBtn").disabled = false;
+    spinRunning = false;
+});
+
+// Setting game events:
+ws.registerSuccessEvent("roulettePlaceBids", (data) => {
+    animateToNumber(data["number"]);
+    setTimeout(() => {
+        document.getElementById("userBalanceStash").value = data["newBalance"];
+        let totalBalanceEl = document.getElementById("balanceDisplay");
+        let newBalance = Number(data["newBalance"]);
+        let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
+        (newBalance > balance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
+        balance = newBalance;
+        data["winningBids"].forEach(bid => {
+            let winEl = document.getElementById("roBD-"+bid["ID"].toString());
+            winEl.classList.toggle("winning");
+            animateCountUp(winEl, 500, bids[bid["ID"]], bids[bid["ID"]]+bid["winAmount"]);
+        });
+        data["losingBids"].forEach(bid => {
+            let looseEl = document.getElementById("roBD-"+bid.toString());
+            looseEl.classList.toggle("losing")
+            animateCountDown(looseEl, 500, bids[bid.toString()], 0);
+        });
+        setTimeout(() => {
+            resetBoard();
+            document.getElementById("spinBtn").disabled = false;
+        }, 1500);
+    }, 6500);
+});
+
+ws.startConnection();
+
+// Defining roulette relevant variables
+let bids = {};
+let lastBids = {};
+let balance = Number(document.getElementById("userBalanceStash").value);
+let biddingOpen = false;
+let currentBidID = null;
+let spinRunning = false;
+
+// Def
 
 function renderBids() {
     for (const [key, value] of Object.entries(bids)) {
@@ -179,7 +224,7 @@ function spin() {
     spinRunning = true;
     let btn = document.getElementById("spinBtn");
     btn.disabled = true;
-    conn.send(JSON.stringify({"bids": bids}));
+    ws.sendAsJson({"bids": bids});
 }
 
 function resetBoard() {
@@ -216,68 +261,3 @@ function redoLastBids(multiplier) {
     }
     renderBids();
 }
-
-conn.onmessage = function(e) {
-    data = JSON.parse(e.data);
-    if (data["type"] == "error") {
-        switch (data["code"]) {
-            case 1:
-                console.error("Invalid JSON given to ws");
-                return;
-            case 2:
-                console.error("Missed check-in");
-                return;
-            case 3:
-                console.error("Invalid data provided for check-in")
-                return;
-            case 6:
-                window.location.href="/logout";
-                return;
-            case 4:
-                notify("Bitte platziere erst eine Wette");
-                document.getElementById("spinBtn").disabled = false;
-                spinRunning = false;
-                return;
-            case 5:
-                notify("Wetten ungültig, bitte überprüfen");
-                document.getElementById("spinBtn").disabled = false;
-                spinRunning = false;
-                return;
-            default:
-                console.error("Unknown error occurred");
-                return;
-        }
-    } else if (data["type"] == "success") {
-        if (data["event"] == "check-in") {
-            console.info("WS connection established");
-        }
-
-        if (data["event"] == "roulettePlaceBids") {
-            animateToNumber(data["number"]);
-            setTimeout(() => {
-                document.getElementById("userBalanceStash").value = data["newBalance"];
-                let totalBalanceEl = document.getElementById("balanceDisplay");
-                let newBalance = Number(data["newBalance"]);
-                let startAnimBalance = parseInt(totalBalanceEl.innerHTML.replace(".", ""), 10);
-                (newBalance > balance)?animateCountUp(totalBalanceEl, 2000, startAnimBalance, newBalance):animateCountDown(totalBalanceEl, 2000, startAnimBalance, newBalance);
-                balance = newBalance;
-                data["winningBids"].forEach(bid => {
-                    let winEl = document.getElementById("roBD-"+bid["ID"].toString());
-                    winEl.classList.toggle("winning");
-                    animateCountUp(winEl, 500, bids[bid["ID"]], bids[bid["ID"]]+bid["winAmount"]);
-                });
-                data["losingBids"].forEach(bid => {
-                    let looseEl = document.getElementById("roBD-"+bid.toString());
-                    looseEl.classList.toggle("losing")
-                    animateCountDown(looseEl, 500, bids[bid.toString()], 0);
-                });
-                setTimeout(() => {
-                    resetBoard();
-                    document.getElementById("spinBtn").disabled = false;
-                }, 1500);
-            }, 6500);
-        }
-    } else {
-        console.log(data);
-    }
-};
