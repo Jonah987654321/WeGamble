@@ -4,6 +4,8 @@
     background-color: var(--dark-bg-scnd);
     display: flex;
     flex-direction: row;
+    position: relative;
+    z-index: 100;
 }
 
 .navElem {

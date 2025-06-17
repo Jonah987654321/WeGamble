@@ -15,6 +15,10 @@ ws.registerErrorCode(8, (data) => {notify("Wetteinsatz zu hoch");});
 
 
 // ===== Registering game state restoring =====
+ws.setAfterReconnect(() => {
+    document.getElementById("userCards").innerHTML = "";
+    document.getElementById("dealerCards").innerHTML = "";
+});
 ws.setGameStateRestoreHandler((data) => {
     // Hide the bet amount input & show the main playtable, set the bet amount from the restored gs
     document.getElementById("startGameContainer").classList.add("hidden");
