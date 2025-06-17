@@ -9,6 +9,20 @@ const ws = new WsClient(wsURL, gameID, apiKey);
 ws.registerErrorCode(14, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
 ws.registerErrorCode(15, (data) => {notify("Wetteinsatz zu hoch");});
 
+// Registering game state restore
+ws.setGameStateRestoreHandler((data) => {
+    // Gamestates are only cached & restored if there were free spins
+    document.getElementById("betInputBlocker").classList.remove("hidden");
+    document.getElementById("betInputWrapper").classList.add("disabled");
+    document.getElementById("spinIndicWrapper").classList.add("attention");
+
+    document.getElementById("freeSpinIndic").innerText = data["restoredData"]["freeSpins"];
+
+    bidAmount = Number(data["restoredData"]["freeSpinAmount"]);
+    document.getElementById("betInput").value = bidAmount;
+    document.getElementById("totalBet").innerText = formatCurrency(bidAmount*8);
+});
+
 // Registering game event
 ws.registerSuccessEvent("slotsRoll", (data) => {
     spinning = true;

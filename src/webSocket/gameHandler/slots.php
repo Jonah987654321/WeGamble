@@ -102,6 +102,18 @@ class Slots extends GameState {
             "freeSpins" => array_sum(array_column($this->freeSpins, 'count'))
         ];
     }
+
+    public function cacheOnDc() {
+        return count($this->freeSpins) > 0;
+    }
+
+    public function onCacheRestore() {
+        parent::updateUserData();
+        return [
+            "freeSpins" => array_sum(array_column($this->freeSpins, 'count')),
+            "freeSpinAmount" => $this->freeSpins[0]["bidAmount"]
+        ];
+    }
 }
 
 ?>
