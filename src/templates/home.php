@@ -13,6 +13,18 @@
         <?php
         require_once "navbar.php";
         ?>
+
+        <div class="dailyLoginWrapper">
+            <div class="loginStreakDisplay">
+                <div class="loginStreakDisplay-left">
+                    <i class="fa-solid fa-fire-flame-curved"></i> 3 Tage Login-Streak
+                </div>
+                <div class="loginStreakDisplay-right">
+                    <button>Tägliche Belohnung abholen</button>
+                </div>
+            </div>
+        </div>
+
         <div class="gameSelector">
             <div class="gameCard">
                 <div class="bgImage">

@@ -4,9 +4,8 @@ body {
 }
 
 .gameSelector {
-    margin-top: 40px;
     display: flex;
-    padding: 30px;
+    padding: 10px 30px;
     flex-wrap: wrap;
     justify-content: start;
 }
@@ -35,7 +34,7 @@ body {
     border-radius: 10px;
     margin-right: 20px;
     position: relative;
-    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .bgImage {
@@ -86,4 +85,61 @@ body {
 .gameButtonWrapper button:hover {
     background-color: var(--dark-btn-hvr);
     cursor: pointer;
+}
+
+.dailyLoginWrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto; /* zentriert das Element auf der Seite */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.loginStreakDisplay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: var(--dark-btn-hvr);
+    border-radius: 10px;
+    color: var(--dark-btn-text);
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap; /* sorgt dafür, dass es auf kleinen Bildschirmen umbrechen kann */
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.loginStreakDisplay-left {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    gap: 8px;
+    flex: 1 1 auto; /* passt sich flexibel an */
+    min-width: 200px;
+}
+
+.loginStreakDisplay-left i {
+    font-size: 22px;
+}
+
+.loginStreakDisplay-right {
+    flex-shrink: 0;
+}
+
+.loginStreakDisplay-right button {
+    background-color: white;
+    color: var(--dark-btn-click);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.loginStreakDisplay-right button:hover {
+    background-color: #ffe6e6;
 }
