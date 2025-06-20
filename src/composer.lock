@@ -234,16 +234,16 @@
         },
         {
             "name": "jonahh/omniroute",
-            "version": "v1.2.9.3",
+            "version": "v1.2.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Jonah987654321/OmniRoute.git",
-                "reference": "c99fe3f0400dc8ad73b56742289697a71b07a452"
+                "reference": "8b1d22f8f09d863a96d28283dae558c87d90a9d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jonah987654321/OmniRoute/zipball/c99fe3f0400dc8ad73b56742289697a71b07a452",
-                "reference": "c99fe3f0400dc8ad73b56742289697a71b07a452",
+                "url": "https://api.github.com/repos/Jonah987654321/OmniRoute/zipball/8b1d22f8f09d863a96d28283dae558c87d90a9d0",
+                "reference": "8b1d22f8f09d863a96d28283dae558c87d90a9d0",
                 "shasum": ""
             },
             "type": "library",
@@ -265,9 +265,9 @@
             "description": "A simple framework to make URL Routing in PHP easier",
             "support": {
                 "issues": "https://github.com/Jonah987654321/OmniRoute/issues",
-                "source": "https://github.com/Jonah987654321/OmniRoute/tree/v1.2.9.3"
+                "source": "https://github.com/Jonah987654321/OmniRoute/tree/v1.2.11"
             },
-            "time": "2025-02-11T13:07:33+00:00"
+            "time": "2025-06-20T07:52:31+00:00"
         },
         {
             "name": "monolog/monolog",
