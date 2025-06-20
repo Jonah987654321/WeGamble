@@ -8,6 +8,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Processor;
 use Monolog\Formatter\LineFormatter;
+use Monolog\ErrorHandler;
 
 use OmniRoute\utils\Dotenv as config;
 
@@ -36,6 +37,8 @@ function getLogger(string $type): Logger {
 
     $logger->pushProcessor(new Processor\WebProcessor());
     $logger->pushProcessor(new Processor\HostnameProcessor());
+
+    ErrorHandler::register($logger);
 
     return $logger;
 }
