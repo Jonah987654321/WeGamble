@@ -6,10 +6,12 @@ class GameState {
     protected array $userData;
     protected string $id;
     protected int $gameType;
+    protected string $lastInput;
 
     public function __construct(int $gameID) {
         $this->id = uniqid("gs_");
         $this->openedOn = date('Y-m-d H:i:s');
+        $this->lastInput = date('Y-m-d H:i:s');
         $this->gameType = $gameID;
     }
 
@@ -45,6 +47,14 @@ class GameState {
 
     public function getID() {
         return $this->id;
+    }
+
+    public function refreshLastInput() {
+        $this->lastInput = date('Y-m-d H:i:s');
+    }
+
+    public function getLastInput() {
+        return $this->lastInput;
     }
 
     public function cacheOnDc() {

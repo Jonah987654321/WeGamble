@@ -171,6 +171,8 @@ class APIServer implements MessageComponentInterface {
             $response = $this->gameStates[$client->resourceId]->handleData($data);
             $this->log->debug("Received data handled by gamestate", ["resourceID" => $client->resourceId, "JSON" => $data, "response" => $response]);
             $client->send(json_encode($response));
+
+            $this->gameStates[$client->resourceId]->refreshLastInput();
         }
     }
 
@@ -178,8 +180,8 @@ class APIServer implements MessageComponentInterface {
         $doCache = false;
         if (key_exists($conn->resourceId, $this->gameStates)) {
             // Client was checked in, end session & stats
-            endTime($this->gameStates[$conn->resourceId]->getID());
             $gs = $this->gameStates[$conn->resourceId];
+            endTime($gs->getID(), $gs->getLastInput());
 
             // Check if gameState wants to be cached
             $doCache = $gs->cacheOnDc();

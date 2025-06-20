@@ -248,7 +248,7 @@ function startTime($gtID, $userID, $gameID, $startTime) {
     $conn->close();
 }
 
-function endTime($gtID) {
+function endTime($gtID, $lastInput) {
     $conn = newSQLConnection();
 
     $stmt = $conn->prepare("SELECT * FROM gameTimeSessions WHERE gtID=?");
@@ -257,7 +257,7 @@ function endTime($gtID) {
     $res = $stmt->get_result()->fetch_assoc();
 
     $start = new DateTime($res["startTime"]);
-    $end = new DateTime();
+    $end = new DateTime($lastInput);
     $diff = $start->diff($end);
     $diffSec = abs(($diff->h * 3600) + ($diff->i * 60) + $diff->s);
 
