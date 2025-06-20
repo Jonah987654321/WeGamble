@@ -109,8 +109,8 @@
         
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
-        <input type="hidden" value="<?php echo config::get("SERVER_PATH"); ?>" id="serverURLStash">
-        <input type="hidden" value="<?php echo config::get("WS_PATH"); ?>" id="wsURLStash">
+        <input type="hidden" value="<?php echo config::get("APP_URL"); ?>" id="serverURLStash">
+        <input type="hidden" value="<?php echo config::get("WS_URL"); ?>" id="wsURLStash">
     </body>
     <script src="../../assets/js/wsClient.js"></script>
     <script src="../../assets/js/functions.js"></script>

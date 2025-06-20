@@ -8,7 +8,7 @@
         use OmniRoute\utils\Dotenv as config;
         require_once __DIR__."/../modules/utils.php";
         
-        echo '<img src="'.config::get("SERVER_PATH").'/assets/img/logo.png" alt="Logo">';
+        echo '<img src="'.config::get("APP_URL").'/assets/img/logo.png" alt="Logo">';
         ?>
     </div>
     <div class="navElem navRight">

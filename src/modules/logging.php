@@ -18,7 +18,7 @@ function getLogger(string $type): Logger {
     $logger = new Logger($type);
 
     $handlers = [];
-    if (config::get("MODE") == "development") {
+    if (config::get("APP_ENV") == "development") {
         $handlers[] = new StreamHandler("php://stdout", Level::Debug);
         $handlers[] = new RotatingFileHandler(__DIR__."/../../logs/dev.log", 1, Level::Debug);
     }
