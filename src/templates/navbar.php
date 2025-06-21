@@ -2,6 +2,7 @@
     <div class="navElem navLeft">
         <button class="navBtn" onclick="window.location.href='/'"><i class="fa-solid fa-house"></i></button>
         <button class="navBtn" onclick="window.location.href='/leaderboard'"><i class="fa-solid fa-chart-simple"></i></button>
+        <!--<button class="navBtn" onclick="window.location.href='/messages'"><i class="fa-solid fa-comment-dots"></i></button>-->
     </div>
     <div class="navElem navMid">
         <?php

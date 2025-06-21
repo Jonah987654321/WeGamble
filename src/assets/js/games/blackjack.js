@@ -27,15 +27,51 @@ ws.setGameStateRestoreHandler((data) => {
 
     // Restore player & dealer cards
     data["restoredData"]["userCards"].forEach(e => {
-        document.getElementById("userCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`;
+        const cardElement = `
+        <div class="card flipped">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" alt="Rückseite">
+            </div>
+            <div class="card-back">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png" alt="Vorderseite">
+            </div>
+          </div>
+        </div>
+        `;
+        document.getElementById("userCards").innerHTML += cardElement;
     });
     data["restoredData"]["dealerCards"].forEach(e => {
-        document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png">`;
+       const cardElement = `
+        <div class="card flipped">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" alt="Rückseite">
+            </div>
+            <div class="card-back">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${e}.png" alt="Vorderseite">
+            </div>
+          </div>
+        </div>
+        `;
+        document.getElementById("dealerCards").innerHTML += cardElement;
     });
 
     // The last dealer card is still hidden, so display the back of the card
     if (!data["restoredData"]["dealerCardShown"]) {
-        document.getElementById("dealerCards").innerHTML += `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" id="dealerHoleCard">`;
+        const cardElement = `
+        <div class="card" id="dealerHiddenCardWrapper">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" alt="Rückseite">
+            </div>
+            <div class="card-back">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" id="dealerHoleCard" alt="Vorderseite">
+            </div>
+          </div>
+        </div>
+        `;
+        document.getElementById("dealerCards").innerHTML += cardElement;
     }
 
     // Only enable the buttons that are possible to be pushed next
@@ -52,33 +88,50 @@ ws.registerSuccessEvent("initGame", (data ) => {
     document.getElementById("playtable").classList.remove("hidden");
 
     // Show the new cards
-    animateCards(data["gameUpdates"]["newCards"]);
+    const animation = new CardAnimation();
+    animation.addToQueue(data["gameUpdates"]["newCards"]);
     if (data["gameData"]["gameRunning"]) {
         // The last dealer card is still hidden, so display the back of the card
-        animateCards([{"type": 2, "card": "blue_back"}]);
+        animation.addToQueue([{"type": 2, "card": "blue_back"}]);
 
-        // Only enable the buttons that are possible to be pushed next
-        setNextButtons(data["gameUpdates"]["possibleNext"]);
+        animation.setAfter(() => {
+            // Only enable the buttons that are possible to be pushed next
+            setNextButtons(data["gameUpdates"]["possibleNext"]);
+        });
     } else {
-        endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+        animation.setAfter(() => {
+            endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+        });
     }
+    animation.run();
 });
 ws.registerSuccessEvent("surrender", (data) => {endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);});
 ws.registerSuccessEvent("hit", (data) => {
     // Display new cards
-    animateCards(data["gameUpdates"]["newCards"]);
+    const animation = new CardAnimation();
+    animation.addToQueue(data["gameUpdates"]["newCards"]);
 
     if (data["gameData"]["gameRunning"]) {
-        // Only enable the buttons that are possible to be pushed next
-        setNextButtons(data["gameUpdates"]["possibleNext"]);
+        animation.setAfter(() => {
+            // Only enable the buttons that are possible to be pushed next
+            setNextButtons(data["gameUpdates"]["possibleNext"]);
+        });
     } else {
-        endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+        animation.setAfter(() => {
+            endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+        });
     }
+    animation.run();
 });
 ws.registerSuccessEvent("stand", (data) => {
-    document.getElementById("dealerHoleCard").remove();
-    animateCards(data["gameUpdates"]["newCards"]);
-    endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+    const animation = new CardAnimation();
+    animation.addToQueue(data["gameUpdates"]["newCards"]);
+
+    animation.setAfter(() => {
+        endGame(data["gameUpdates"]["displayText"], data["gameUpdates"]["userBalance"]);
+    });
+
+    animation.run();
 });
 
 
@@ -120,12 +173,65 @@ function doubleDown() {
 
 
 // ===== Helper Functions for manipulating HTML =====
-function animateCards(cards) {
-    cards.forEach(c => {
-        const cardElement = `<img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${c["card"]}.png" ${(c["card"]=="blue_back")?'id="dealerHoleCard"':''}>`;
-        const wrapper = (c["type"]==1)?document.getElementById("userCards"):document.getElementById("dealerCards");
+class CardAnimation {
+    #cards;
+    #afterAnimation;
+
+    constructor() {
+        this.#cards = [];
+        this.#afterAnimation = null;
+    }
+
+    addToQueue(newCards) {
+        this.#cards.push(...newCards);
+    }
+
+    setAfter(callback) {
+        this.#afterAnimation = callback;
+    }
+
+    run() {
+        if (this.#cards.length == 0) {
+            if (this.#afterAnimation != null) {
+                this.#afterAnimation();
+            }
+            return;
+        }
+
+        const c = this.#cards.shift();
+        
+        console.log(document.getElementById("dealerHiddenCardWrapper"));
+        if (c.type == 2 && document.getElementById("dealerHiddenCardWrapper") != null) {
+            document.getElementById("dealerHoleCard").src = `${document.getElementById("serverURLStash").value}/assets/img/cards/${c.card}.png`;
+            document.getElementById("dealerHiddenCardWrapper").classList.add("flipped");
+            document.getElementById("dealerHiddenCardWrapper").id = guidGenerator();
+            setTimeout(() => {this.run()}, 500);
+            return;
+        }
+
+        const cardId = (c.card =="blue_back")?'dealerHiddenCardWrapper':guidGenerator();
+        const cardElement = `
+        <div class="card" id="${cardId}">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/blue_back.png" alt="Rückseite">
+            </div>
+            <div class="card-back">
+              <img src="${document.getElementById("serverURLStash").value}/assets/img/cards/${c.card}.png" ${(c.card == "blue_back")?'id="dealerHoleCard"':''} alt="Vorderseite">
+            </div>
+          </div>
+        </div>
+        `;
+        const wrapper = (c.type==1)?document.getElementById("userCards"):document.getElementById("dealerCards");
         wrapper.innerHTML += cardElement;
-    });
+
+        setTimeout(() => {
+            if (c.card != "blue_back") {
+                document.getElementById(cardId).classList.add("flipped");
+            }
+            setTimeout(() => {this.run()}, 500);
+        }, 400);
+    }
 }
 
 function showEnd(message) {
