@@ -56,15 +56,19 @@
                             $bestGame = null;
 
                             foreach($data["gameStats"] as $g) {
-                                $wl = $g["winSum"]+$g["looseSum"];
-                                if ($bestGame == null || $bestGame["wl"] < $wl) {
-                                    $bestGame = ["gameID"=>$g["gameID"], "wl"=>$wl];
+                                if ($bestGame == null || $bestGame["gameTime"] < $g["playTime"]) {
+                                    $bestGame = ["gameID"=>$g["gameID"], "gameTime"=>$g["playTime"]];
                                 }
                             }
+
+                            $mostGameHours = floor($bestGame["gameTime"] / 3600);
+                            $mostGameMinutes = floor(($bestGame["gameTime"] % 3600) / 60);
+
+                            $mostGamePlayTime = "{$mostGameHours}h {$mostGameMinutes}min";
                         ?>
                         <div class="statEntry">
-                            <div class="se-DetailsTitle"><i class="fa-solid fa-ranking-star"></i> Erfolgreichstes Spiel:</div>
-                            <div class="se-DetailsContent"><?php echo $gameNames[$bestGame["gameID"]].' ('.formatCurrency($bestGame["wl"]).'€)'?></div>
+                            <div class="se-DetailsTitle"><i class="fa-solid fa-ranking-star"></i> Meistgespieltes Spiel:</div>
+                            <div class="se-DetailsContent"><?php echo $gameNames[$bestGame["gameID"]].' ('.$mostGamePlayTime.')'?></div>
                         </div>
                     </div>
                     <div class="statsLine">
