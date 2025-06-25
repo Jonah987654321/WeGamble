@@ -258,14 +258,13 @@ function endTime($gtID, $lastInput) {
 
     $start = new DateTime($res["startTime"]);
     $end = new DateTime($lastInput);
-    $diff = $start->diff($end);
-    $diffSec = abs(($diff->h * 3600) + ($diff->i * 60) + $diff->s);
+    $diffSec = abs($end->getTimestamp() - $start->getTimestamp());
 
     $stmt = $conn->prepare("UPDATE stats SET playTime=playTime+? WHERE userID=?");
     $stmt->execute([$diffSec, $res["userID"]]);
 
-    $stmt = $conn->prepare("UPDATE gameSpecificStats SET playTime=playTime+? WHERE userID=?");
-    $stmt->execute([$diffSec, $res["userID"]]);
+    $stmt = $conn->prepare("UPDATE gameSpecificStats SET playTime=playTime+? WHERE userID=? AND gameID=?");
+    $stmt->execute([$diffSec, $res["userID"], $res["gameID"]]);
 
     $stmt = $conn->prepare("DELETE FROM gameTimeSessions WHERE gtID=?");
     $stmt->execute([$gtID]);
