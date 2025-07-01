@@ -307,8 +307,17 @@ class Blackjack extends GameState {
 
     private function calcCardValues(array $cards) {
         $val = 0;
+        $aces = 0;
         foreach ($cards as $c) {
             $val += $this->cardValues[$c];
+            if ($this->cardValues[$c] == 11) {
+                $aces++;
+            }
+        }
+
+        while ($val > 21 && $aces > 0) {
+            $val -= 10;
+            --$aces;
         }
         return $val;
     }
