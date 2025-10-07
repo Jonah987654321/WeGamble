@@ -58,7 +58,7 @@ Go to the project directory
 Install dependencies
 
 ```bash
-  composer install
+  cd src && composer install && cd ..
 ```
 
 Rename the example env to be your actual environment file & fill in your values
