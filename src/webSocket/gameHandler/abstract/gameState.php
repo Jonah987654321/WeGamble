@@ -1,5 +1,7 @@
 <?php
 
+use Ratchet\ConnectionInterface;
+
 class GameState {
     protected ?string $apiKey;
     protected ?string $openedOn;
@@ -7,12 +9,21 @@ class GameState {
     protected string $id;
     protected int $gameType;
     protected string $lastInput;
+    private ?ConnectionInterface $client;
 
     public function __construct(int $gameID) {
         $this->id = uniqid("gs_");
         $this->openedOn = date('Y-m-d H:i:s');
         $this->lastInput = date('Y-m-d H:i:s');
         $this->gameType = $gameID;
+    }
+
+    public function setConnection(ConnectionInterface $c) {
+        $this->client = $c;
+    }
+
+    public function sendData(array $data) {
+        $this->client->send(json_encode($data));
     }
 
     public function checkIn(string $apiKey) {

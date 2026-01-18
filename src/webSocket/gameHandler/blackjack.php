@@ -3,12 +3,7 @@
 namespace GameHandler;
 
 use GameState;
-require_once "gameState.php";
-
-define("ERR_G2_BID_MISSING", 7);
-define("ERR_G2_BIDS_OVER_BALANCE", 8);
-define("ERR_G2_MISSING_ACTION", 9);
-define("ERR_G2_INVALID_ACTION", 10);
+require_once "abstract/gameState.php";
 
 class Blackjack extends GameState {
     private array $cardValues = [
@@ -67,7 +62,7 @@ class Blackjack extends GameState {
         if(!isset($data["type"])) {
             return [
                 'type' => 'error',
-                "code" => ERR_G2_MISSING_ACTION,
+                "code" => ERR_MISSING_ACTION,
                 'message' => 'Missing type of action',
             ];
         }
@@ -76,7 +71,7 @@ class Blackjack extends GameState {
         if(!in_array($data["type"], $this->acceptableNext)) {
             return [
                 'type' => 'error',
-                "code" => ERR_G2_INVALID_ACTION,
+                "code" => ERR_INVALID_ACTION,
                 'message' => 'The action type provided is not valid for the current game state',
             ];
         }
@@ -85,7 +80,7 @@ class Blackjack extends GameState {
             if (!isset($data["betAmount"]) || intval($data["betAmount"] <= 0)) {
                 return [
                     'type' => 'error',
-                    "code" => ERR_G2_BID_MISSING,
+                    "code" => ERR_MISSING_BIDS,
                     'message' => 'Invalid or missing bid amount',
                 ];
             }
@@ -93,7 +88,7 @@ class Blackjack extends GameState {
             if (intval($data["betAmount"]) > $this->userData["balance"]) {
                 return [
                     'type' => 'error',
-                    "code" => ERR_G2_BIDS_OVER_BALANCE,
+                    "code" => ERR_BIDS_OVER_BALANCE,
                     'message' => 'Bids over balance',
                 ];
             }

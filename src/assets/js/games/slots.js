@@ -6,8 +6,8 @@ const gameID = 4;
 const ws = new WsClient(wsURL, gameID, apiKey);
 
 // Registering error codes
-ws.registerErrorCode(14, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
-ws.registerErrorCode(15, (data) => {notify("Wetteinsatz zu hoch");});
+ws.registerErrorCode(6101, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
+ws.registerErrorCode(6102, (data) => {notify("Wetteinsatz zu hoch");});
 
 // Registering game state restore
 ws.setGameStateRestoreHandler((data) => {

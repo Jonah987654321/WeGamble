@@ -20,6 +20,7 @@ class WsClient {
     #registeredSuccessEvents;
     #gsRestoreHandler;
     #afterReconnect;
+    #afterCheckin;
 
     #reconnectAttempts;
     #reconnectUiInterval;
@@ -56,6 +57,10 @@ class WsClient {
         this.#afterReconnect = null;
     }
 
+    getStatus() {
+        return this.#connectionStatus;
+    }
+
     registerErrorCode(code, callback) {
         if (typeof code !== "number") {
             throw new TypeError("Error code must be a number");
@@ -88,6 +93,14 @@ class WsClient {
         }
 
         this.#gsRestoreHandler = callback;
+    }
+
+    setAfterCheckIn(callback) {
+        if (typeof callback !== "function") {
+            throw new TypeError("GS Restore Handler must be a function");
+        }
+
+        this.#afterCheckin = callback;
     }
 
     setAfterReconnect(callback) {
@@ -146,25 +159,25 @@ class WsClient {
 
         if (data["type"] == "error") {
             switch (data["code"]) {
-                case 1:
+                case 6001:
                     console.error("Invalid JSON given to ws");
-                    this.#displayErrorCode("WS01");
+                    this.#displayErrorCode("WS6001");
                     return;
-                case 2:
+                case 6002:
                     console.error("Missed check-in");
-                    this.#displayErrorCode("WS02");
+                    this.#displayErrorCode("WS6002");
                     return;
-                case 3:
+                case 6003:
                     console.error("Invalid data provided for check-in");
-                    this.#displayErrorCode("WS03");
+                    this.#displayErrorCode("WS6003");
                     return;
-                case 500:
-                    console.error("Internal server error");
-                    this.#displayErrorCode("WS500");
-                    return;
-                case 6:
+                case 6004:
                     // API key invalid - lets log out the user
                     window.location.href="/logout";
+                    return;
+                case 6500:
+                    console.error("Internal server error");
+                    this.#displayErrorCode("WS6500");
                     return;
                 default:
                     if (data["code"] in this.#registeredErrorCodes) {
@@ -192,13 +205,16 @@ class WsClient {
                 }
 
                 this.#hideUIBlocker();
+                if (this.#afterCheckin != null) {
+                    this.#afterCheckin();
+                } 
             } else if (data["event"] in this.#registeredSuccessEvents) {
                 this.#registeredSuccessEvents[data["event"]](data);
             } else {
-                console.warn("Unaccounted event: ", data)
+                console.warn("Unaccounted success event: ", data)
             }
         } else {
-            console.debug(data);
+            console.warn("Unaccounted websocket type: ", data);
         }
     }
 

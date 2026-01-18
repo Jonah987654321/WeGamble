@@ -21,4 +21,8 @@ Router::add("/slots", function() {
     require_once "templates/games/slots.php";
 }, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
 
+Router::add("/poker", function() {
+    require_once "templates/games/poker.php";
+}, ext: [LOGIN_REQUIRED, Tasks::runTask("updateBalance")]);
+
 ?>

@@ -12,8 +12,8 @@ use Monolog\ErrorHandler;
 
 use OmniRoute\utils\Dotenv as config;
 
-define("LOG_WEBSOCKET", "websocket");
-define("LOG_", "");
+const LOG_WEBSOCKET = "websocket";
+const LOG_ = "";
 
 function getLogger(string $type): Logger {
     $logger = new Logger($type);

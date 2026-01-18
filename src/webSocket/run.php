@@ -1,16 +1,7 @@
 <?php
 
-define("ERR_INVALID_JSON", 1);
-define("ERR_CHECKIN_REQUIRED", 2);
-define("ERR_CHECKIN_DATA_INVALID", 3);
-define("ERR_API_TOKEN_INVALID", 6);
-
-define("GID_ROULETTE", 1);
-define("GID_BLACKJACK", 2);
-define("GID_HITTHENICK", 3);
-define("GID_SLOTS", 4);
-
 require_once __DIR__."/../vendor/autoload.php";
+require_once __DIR__."/../codeNumberRegister.php";
 
 use OmniRoute\utils\Dotenv as config;
 config::loadFile(__DIR__."/../../.env");

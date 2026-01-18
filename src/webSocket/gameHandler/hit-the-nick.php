@@ -3,11 +3,7 @@
 namespace GameHandler;
 
 use GameState;
-require_once "gameState.php";
-
-define("ERR_G3_BID_MISSING", 11);
-define("ERR_G3_BIDS_OVER_BALANCE", 12);
-define("ERR_G3_NO_SELECTION", 13);
+require_once "abstract/gameState.php";
 
 class HitTheNick extends GameState {
     public function __construct() {
@@ -28,7 +24,7 @@ class HitTheNick extends GameState {
         if (!isset($data["betAmount"]) || intval($data["betAmount"] <= 0)) {
             return [
                 'type' => 'error',
-                "code" => ERR_G3_BID_MISSING,
+                "code" => ERR_MISSING_BIDS,
                 'message' => 'Invalid or missing bid amount',
             ];
         }
@@ -36,7 +32,7 @@ class HitTheNick extends GameState {
         if (intval($data["betAmount"]) > $this->userData["balance"]) {
             return [
                 'type' => 'error',
-                "code" => ERR_G3_BID_MISSING,
+                "code" => ERR_BIDS_OVER_BALANCE,
                 'message' => 'Bids over balance',
             ];
         }
@@ -46,7 +42,7 @@ class HitTheNick extends GameState {
         if (!isset($data["selection"]) || intval($data["selection"]) > 9 || intval($data["selection"]) < 1) {
             return [
                 'type' => 'error',
-                "code" => ERR_G3_NO_SELECTION,
+                "code" => ERR_MISSING_USER_INPUT,
                 'message' => 'Missing or invalid selection',
             ];
         }

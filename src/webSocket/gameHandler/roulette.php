@@ -3,10 +3,7 @@
 namespace GameHandler;
 
 use GameState;
-require_once "gameState.php";
-
-define("ERR_G1_MISSING_BIDS", 4);
-define("ERR_G1_BIDS_OVER_BALANCE", 5);
+require_once "abstract/gameState.php";
 
 class Roulette extends GameState {
     public function __construct() {
@@ -27,7 +24,7 @@ class Roulette extends GameState {
         if (!isset($body["bids"]) || count(array_keys($body["bids"])) == 0) {
             return [
                 'type' => 'error',
-                "code" => ERR_G1_MISSING_BIDS,
+                "code" => ERR_MISSING_BIDS,
                 'message' => 'No bids provided',
             ];
         }
@@ -38,7 +35,7 @@ class Roulette extends GameState {
             if ($bidAmount < 0) {
                 return [
                     'type' => 'error',
-                    "code" => ERR_G1_BIDS_OVER_BALANCE,
+                    "code" => ERR_BIDS_OVER_BALANCE,
                     'message' => 'Bids over balance',
                 ];
             }
@@ -48,7 +45,7 @@ class Roulette extends GameState {
         if ($totalAmount > $this->userData["balance"]) {
             return [
                 'type' => 'error',
-                "code" => ERR_G1_BIDS_OVER_BALANCE,
+                "code" => ERR_BIDS_OVER_BALANCE,
                 'message' => 'Bids over balance',
             ];
         }

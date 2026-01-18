@@ -6,12 +6,12 @@ const gameID = 1;
 const ws = new WsClient(wsURL, gameID, apiKey);
 
 // Registering error codes
-ws.registerErrorCode(4, (data) => {
+ws.registerErrorCode(6101, (data) => {
     notify("Bitte platziere erst eine Wette");
     document.getElementById("spinBtn").disabled = false;
     spinRunning = false;
 });
-ws.registerErrorCode(5, (data) => {
+ws.registerErrorCode(6102, (data) => {
     notify("Wetten ungültig, bitte überprüfen");
     document.getElementById("spinBtn").disabled = false;
     spinRunning = false;

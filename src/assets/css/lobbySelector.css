@@ -1,0 +1,509 @@
+/* Lobby Selector Main Container */
+.lobbySelectorContainer {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--light-bg) 0%, var(--light-bg-scnd) 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbySelectorContainer {
+        background: linear-gradient(135deg, var(--dark-bg) 0%, #3a3a3a 100%);
+        color: var(--dark-text);
+    }
+}
+
+/* Header Section */
+.lobbyHeader {
+    padding: 30px 30px 20px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyHeader {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.lobbyTitle {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--light-text);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyTitle {
+        color: var(--dark-text);
+    }
+}
+
+/* Tabs Section */
+.lobbyTabs {
+    display: flex;
+    gap: 0;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyTabs {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+}
+
+.lobbyTab {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--light-text);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyTab {
+        color: var(--dark-text);
+    }
+}
+
+.lobbyTab:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyTab:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+}
+
+.lobbyTab.active {
+    border-bottom-color: var(--dark-btn);
+    color: var(--dark-btn);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyTab.active {
+        border-bottom-color: var(--dark-btn);
+        color: var(--dark-btn);
+    }
+}
+
+/* Content Area */
+.lobbyContent {
+    padding: 30px;
+    min-height: 400px;
+}
+
+.lobbyContentTab {
+    display: none;
+}
+
+.lobbyContentTab.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Lobby List */
+.lobbyList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lobbyItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 18px;
+    background: var(--light-bg);
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyItem {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.lobbyItem:hover {
+    border-color: var(--dark-btn);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateX(4px);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyItem:hover {
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1);
+    }
+}
+
+.lobbyInfo {
+    flex: 1;
+}
+
+.lobbyName {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--light-text);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyName {
+        color: var(--dark-text);
+    }
+}
+
+.lobbyStats {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+    .lobbyStats {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.playerCount,
+.privateIcon {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.privateIcon {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+.joinButton {
+    padding: 10px 15px;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joinButton:hover {
+    background-color: var(--dark-btn-hvr);
+    transform: scale(1.05);
+}
+
+.joinButton:active {
+    background-color: var(--dark-btn-click);
+}
+
+/* Empty State */
+.emptyMessage {
+    text-align: center;
+    padding: 60px 30px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+    .emptyMessage {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+.emptyMessage i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.emptyMessage p {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.emptyMessage small {
+    display: block;
+    font-size: 14px;
+    margin-top: 10px;
+    opacity: 0.7;
+}
+
+/* Loading State */
+.loadingMessage {
+    text-align: center;
+    padding: 60px 30px;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .loadingMessage {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Create Lobby Form */
+.lobbyCreateForm {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formGroup label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--light-text);
+}
+
+@media (prefers-color-scheme: dark) {
+    .formGroup label {
+        color: var(--dark-text);
+    }
+}
+
+.formGroup input {
+    padding: 12px 15px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--light-bg);
+    color: var(--light-text);
+    transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .formGroup input {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--dark-text);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: var(--dark-btn);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.formGroup input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+    .formGroup input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+.createLobbyButton {
+    padding: 14px 20px;
+    background-color: var(--dark-btn);
+    color: var(--dark-btn-text);
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.createLobbyButton:hover {
+    background-color: var(--dark-btn-hvr);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.createLobbyButton:active {
+    background-color: var(--dark-btn-click);
+    transform: translateY(0);
+}
+
+/* Password Prompt Overlay */
+.passwordPrompt {
+    min-width: 350px;
+}
+
+.passwordPrompt h2 {
+    margin-bottom: 15px;
+    color: var(--light-text);
+}
+
+@media (prefers-color-scheme: dark) {
+    .passwordPrompt h2 {
+        color: var(--dark-text);
+    }
+}
+
+.passwordPrompt p {
+    margin-bottom: 20px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+    .passwordPrompt p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+.passwordInput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    background: var(--light-bg);
+    color: var(--light-text);
+}
+
+@media (prefers-color-scheme: dark) {
+    .passwordInput {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--dark-text);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.passwordInput:focus {
+    outline: none;
+    border-color: var(--dark-btn);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 768px) {
+    .lobbySelectorContainer {
+        margin: 20px 10px;
+    }
+
+    .lobbyHeader {
+        padding: 20px 20px 15px;
+    }
+
+    .lobbyTitle {
+        font-size: 24px;
+    }
+
+    .lobbyContent {
+        padding: 20px;
+        min-height: 300px;
+    }
+
+    .lobbyTabs {
+        flex-direction: column;
+    }
+
+    .lobbyTab {
+        padding: 12px 15px;
+        border-bottom: 2px solid transparent;
+        border-right: 3px solid transparent;
+    }
+
+    .lobbyTab.active {
+        border-bottom: none;
+        border-right-color: var(--dark-btn);
+    }
+
+    .lobbyItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .joinButton {
+        align-self: flex-start;
+        margin-top: 10px;
+    }
+
+    .lobbyCreateForm {
+        max-width: 100%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .lobbySelectorContainer {
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .lobbyHeader {
+        padding: 15px;
+    }
+
+    .lobbyTitle {
+        font-size: 20px;
+    }
+
+    .lobbyContent {
+        padding: 15px;
+    }
+
+    .lobbyTab {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .emptyMessage {
+        padding: 40px 20px;
+    }
+
+    .emptyMessage i {
+        font-size: 36px;
+    }
+
+    .passwordPrompt {
+        min-width: auto;
+        width: 100%;
+    }
+}

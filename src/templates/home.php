@@ -76,7 +76,7 @@
                     <div class="gc-Overlay">
                         <p class="gameName">Poker</p>
                         <div class="gameButtonWrapper">
-                            <button onclick="window.location.href='/game/blackjack'">Jetzt spielen</button>
+                            <button onclick="window.location.href='/game/poker'">Jetzt spielen</button>
                         </div>
                     </div>
                 </div>

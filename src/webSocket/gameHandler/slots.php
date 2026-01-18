@@ -3,10 +3,7 @@
 namespace GameHandler;
 
 use GameState;
-require_once "gameState.php";
-
-define("ERR_G4_BID_MISSING", 14);
-define("ERR_G4_BIDS_OVER_BALANCE", 15);
+require_once "abstract/gameState.php";
 
 class Slots extends GameState {
     private array $freeSpins;
@@ -41,7 +38,7 @@ class Slots extends GameState {
             if (!isset($data["betAmount"]) || intval($data["betAmount"] <= 0)) {
                 return [
                     'type' => 'error',
-                    "code" => ERR_G4_BID_MISSING,
+                    "code" => ERR_MISSING_BIDS,
                     'message' => 'Invalid or missing bid amount',
                 ];
             }
@@ -49,7 +46,7 @@ class Slots extends GameState {
             if (intval($data["betAmount"])*$amountWR > $this->userData["balance"]) {
                 return [
                     'type' => 'error',
-                    "code" => ERR_G4_BIDS_OVER_BALANCE,
+                    "code" => ERR_BIDS_OVER_BALANCE,
                     'message' => 'Bids over balance',
                 ];
             }

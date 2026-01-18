@@ -11,10 +11,12 @@ require_once "gameHandler/blackjack.php";
 require_once "gameHandler/roulette.php";
 require_once "gameHandler/hit-the-nick.php";
 require_once "gameHandler/slots.php";
+require_once "gameHandler/poker.php";
 use GameHandler\Blackjack;
 use GameHandler\Roulette;
 use GameHandler\HitTheNick;
 use GameHandler\Slots;
+use GameHandler\Poker;
 
 require_once "gsCache.php";
 
@@ -100,6 +102,7 @@ class APIServer implements MessageComponentInterface {
             if ($this->cache->isCached($userData["userID"], $data["gameID"])) {
                 // There is a cached gameState for the given check-in game that we can load
                 $gs = $this->cache->load($userData["userID"], $data["gameID"]);
+                $gs->setConnection($client);
 
                 // Tell the gameState it was restored & get the data of the state
                 $restoredData = $gs->onCacheRestore();
@@ -135,6 +138,9 @@ class APIServer implements MessageComponentInterface {
                     case GID_SLOTS:
                         $gs = new Slots();
                         break;
+                    case GID_POKER:
+                        $gs = new Poker();
+                        break;
                     default: //Invalid gameID
                         $validID = false;
                         break;
@@ -154,6 +160,7 @@ class APIServer implements MessageComponentInterface {
 
                 // Check-in for new gameState success
                 $this->gameStates[$client->resourceId] = $gs;
+                $gs->setConnection($client);
                 $gs->checkIn($data["apiKey"]);
                 startTime($gs->getID(), $gs->getUserData()["userID"], $data["gameID"], $gs->getOpenedOn());
 
@@ -216,7 +223,7 @@ class APIServer implements MessageComponentInterface {
         try {
             $conn->send(json_encode([
                             'type' => 'error',
-                            "code" => 500,
+                            "code" => ERR_SERVER_INTERNAL,
                             'message' => 'Internal server error',
             ]));
         } catch (\Exception $e) {

@@ -6,9 +6,9 @@ const gameID = 3;
 const ws = new WsClient(wsURL, gameID, apiKey);
 
 // Registering error codes
-ws.registerErrorCode(11, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
-ws.registerErrorCode(12, (data) => {notify("Wetteinsatz zu hoch");});
-ws.registerErrorCode(13, (data) => {notify("Auswahl fehlt");});
+ws.registerErrorCode(6101, (data) => {notify("Bitte gib erst einen Wetteinsatz ein");});
+ws.registerErrorCode(6102, (data) => {notify("Wetteinsatz zu hoch");});
+ws.registerErrorCode(6105, (data) => {notify("Auswahl fehlt");});
 
 // Registering game events
 ws.registerSuccessEvent("hitTheNick-runGame", (data) => {
