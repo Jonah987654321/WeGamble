@@ -13,7 +13,7 @@ class Lobby {
     private int $gameID;
     private int $maxPlayers;
 
-    public function __construct(GameState $startingGS, $lobbyName, $maxPlayers) {
+    public function __construct(GameStateMP $startingGS, $lobbyName, $maxPlayers) {
         $this->id = uniqid("mp-lobby_");
         $this->lobbyName = $lobbyName;
         $this->hasStarted = false;
@@ -30,7 +30,7 @@ class Lobby {
         $this->privateLobbyPassword = $pwd;
     }
 
-    public function join(GameState $gs, ?string $pwd = null): bool {
+    public function join(GameStateMP $gs, ?string $pwd = null): bool {
         if (($this->isPrivate && $pwd != $this->privateLobbyPassword) || (count($this->players) >= $this->maxPlayers)) {
             return false;
         }
@@ -47,6 +47,18 @@ class Lobby {
         return true;
     }
 
+    public function gsHasDisconnected(GameStateMP $gs): void {
+        $this->broadcastEvent([
+            "type" => "eventBroadcast",
+            "event" => "playerDisconnect",
+            "data" => [
+                "playerID" => $gs->getUserData()["userID"],
+                "playerName" => $gs->getUserData()["userName"],
+                "playerBalance" => $gs->getUserData()["balance"]
+            ]
+        ]);
+    }
+
     public function checkJoinable(int $gameID): bool {
         return !$this->hasStarted
             && $this->gameID == $gameID
@@ -55,12 +67,10 @@ class Lobby {
 
     public function broadcastEvent(array $data): void {
         foreach ($this->players as $p) {
-            $p->sendData($data);
+            if ($p->isConnected()) {
+                $p->sendData($data);
+            }
         }
-    }
-
-    public function getGameID(): int {
-        return $this->gameID;
     }
 
     public function toArray(bool $isJoined = false): array {
@@ -69,7 +79,8 @@ class Lobby {
             "lobbyName" => $this->lobbyName,
             "lobbyIsPrivate" => $this->isPrivate,
             "lobbyMaxPlayers" => $this->maxPlayers,
-            "lobbyCurrentPlayerCount" => count($this->players)
+            "lobbyCurrentPlayerCount" => count($this->players),
+            "lobbyHasStarted" => $this->hasStarted
         ];
         if ($isJoined) {
             $response["ownerID"] = $this->ownerID;
@@ -77,6 +88,7 @@ class Lobby {
             foreach ($this->players as $p) {
                 $reducedPlayer = $p->getUserData();
                 unset($reducedPlayer["userPassword"]);
+                $reducedPlayer["connected"] = $p->isConnected();
                 $playerData[] = $reducedPlayer;
             }
             $response["players"] = $playerData;
@@ -85,4 +97,5 @@ class Lobby {
     }
 
     public function getID(): string { return $this->id; }
+    public function getGameID(): int { return $this->gameID; }
 }

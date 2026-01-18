@@ -18,9 +18,10 @@ class WsClient {
 
     #registeredErrorCodes;
     #registeredSuccessEvents;
+    #registeredBroadcastEvents;
     #gsRestoreHandler;
+    #gsNoRestoreHandler;
     #afterReconnect;
-    #afterCheckin;
 
     #reconnectAttempts;
     #reconnectUiInterval;
@@ -47,6 +48,7 @@ class WsClient {
 
         this.#registeredErrorCodes = {};
         this.#registeredSuccessEvents = {};
+        this.#registeredBroadcastEvents = {};
 
         this.#connectionStatus = STATUS_INIT;
         this.#reconnectAttempts = 0;
@@ -87,6 +89,19 @@ class WsClient {
         this.#registeredSuccessEvents[eventType] = callback;
     }
 
+    registerBroadcastEvent(eventType, callback) {
+        if (typeof eventType !== "string") {
+            throw new TypeError("Event type must be a string");
+        }
+
+        if (typeof callback !== "function") {
+            throw new TypeError("Event callback must be a function");
+        }
+
+        // All arguments correct, we can register the function linked to the error code
+        this.#registeredBroadcastEvents[eventType] = callback;
+    }
+
     setGameStateRestoreHandler(callback) {
         if (typeof callback !== "function") {
             throw new TypeError("GS Restore Handler must be a function");
@@ -95,12 +110,12 @@ class WsClient {
         this.#gsRestoreHandler = callback;
     }
 
-    setAfterCheckIn(callback) {
+    setGameStateNoRestoreHandler(callback) {
         if (typeof callback !== "function") {
             throw new TypeError("GS Restore Handler must be a function");
         }
 
-        this.#afterCheckin = callback;
+        this.#gsNoRestoreHandler = callback;
     }
 
     setAfterReconnect(callback) {
@@ -173,7 +188,7 @@ class WsClient {
                     return;
                 case 6004:
                     // API key invalid - lets log out the user
-                    window.location.href="/logout";
+                    window.location.href = "/logout";
                     return;
                 case 6500:
                     console.error("Internal server error");
@@ -201,19 +216,28 @@ class WsClient {
                 }
 
                 if (data["restored"]) {
-                    this.#gsRestoreHandler(data);
+                    if (this.#gsRestoreHandler != null) {
+                        this.#gsRestoreHandler(data);
+                    }
+                } else {
+                    if (this.#gsNoRestoreHandler != null) {
+                        this.#gsNoRestoreHandler(data);
+                    }
                 }
 
                 this.#hideUIBlocker();
-                if (this.#afterCheckin != null) {
-                    this.#afterCheckin();
-                } 
             } else if (data["event"] in this.#registeredSuccessEvents) {
                 this.#registeredSuccessEvents[data["event"]](data);
             } else {
                 console.warn("Unaccounted success event: ", data)
             }
-        } else {
+        } else if (data["type"] == "eventBroadcast") {
+            if (data["event"] in this.#registeredBroadcastEvents) {
+                this.#registeredBroadcastEvents[data["event"]](data);
+            } else {
+                console.warn("Unaccounted broadcast event: ", data);
+            }
+        }else {
             console.warn("Unaccounted websocket type: ", data);
         }
     }

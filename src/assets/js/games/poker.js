@@ -7,11 +7,7 @@ const apiKey = document.getElementById("apiTokenStash").value;
 const gameID = 5;
 
 const ws = new WsClient(wsURL, gameID, apiKey);
-const lobbySelector = new LobbySelector(ws);
-
-ws.setAfterCheckIn(() => {
-    lobbySelector.start();
-});
+const lobbyManager = new LobbyManager(ws);
 
 // Starting ws connection
 ws.startConnection();

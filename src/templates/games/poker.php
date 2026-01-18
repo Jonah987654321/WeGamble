@@ -2,11 +2,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Blackjack | WeGamble</title>
+        <title>Poker | WeGamble</title>
         <link rel="stylesheet" href="../../assets/css/main.css">
         <link rel="stylesheet" href="../../assets/css/fontawesome.css">
         <link rel="stylesheet" href="../../assets/css/navbar.css">
-        <link rel="stylesheet" href="../../assets/css/lobbySelector.css">
+        <link rel="stylesheet" href="../../assets/css/mpComponents/lobbySelector.css">
+        <link rel="stylesheet" href="../../assets/css/mpComponents/lobbyLayouts.css">
         <link rel="stylesheet" href="../../assets/css/games/poker.css">
         <link rel="icon" type="image/png" href="../../assets/img/logo.png">
     </head>
@@ -21,10 +22,7 @@
         ?>
 
         <div class="mainWrapper">
-            <div id="lobbySelectorWrapper"></div>
-            <div id="lobbyWaitingDisplay">
-
-            </div>
+            <div id="lobbyContainer"></div>
         </div>
 
         
@@ -37,5 +35,7 @@
     <script src="../../assets/js/functions.js"></script>
     <script src="../../assets/js/overlay.js"></script>
     <script src="../../assets/js/mpComponents/lobbySelector.js"></script>
+    <script src="../../assets/js/mpComponents/lobbyChat.js"></script>
+    <script src="../../assets/js/mpComponents/lobbyManager.js"></script>
     <script src="../../assets/js/games/poker.js"></script>
 </html>

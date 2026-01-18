@@ -5,11 +5,17 @@ require_once __DIR__."/../multiplayer/Lobby.php";
 class GameStateMP extends GameState {
     protected ?Lobby $lobby;
     protected bool $isInLobby;
+    protected bool $connected;
 
     public function __construct(int $gameID) {
         parent::__construct($gameID);
         $this->lobby = null;
         $this->isInLobby = false;
+        $this->connected = true;
+    }
+
+    public function isConnected(): bool {
+        return $this->connected;
     }
 
     public function handleData(array $data): array {
@@ -87,7 +93,31 @@ class GameStateMP extends GameState {
                 'message' => 'The action type provided is not valid for the current game state',
             ];
         } else {
-            return $this->handleGameLogic($data);
+            if ($data["type"] == "chatMessageSend") {
+                if (!isset($data["messageContent"]) || trim($data["messageContent"]) == "") {
+                    return [
+                        'type' => 'error',
+                        "code" => ERR_MISSING_DATA,
+                        'message' => 'Missing message content',
+                    ];
+                }
+
+                $this->lobby->broadcastEvent([
+                    "type" => "eventBroadcast",
+                    "event" => "chatMessageReceived",
+                    "data" => [
+                        "messageContent" => $data["messageContent"],
+                        "from" => $this->getUserData()["userName"],
+                        "timestamp" => time()
+                    ]
+                ]);
+                return [
+                    "type" => "success",
+                    "event" => "chatMessageSend"
+                ];
+            } else {
+                return $this->handleGameLogic($data);
+            }
         }
     }
 
@@ -116,6 +146,18 @@ class GameStateMP extends GameState {
         }
         return false;
     }
-}
 
-?>
+    public function cacheOnDc(): bool {
+        return $this->isInLobby;
+    }
+
+    public function onCache() {
+        $this->connected = false;
+        $this->lobby->gsHasDisconnected($this);
+    }
+
+    public function onCacheRestore(): array {
+        $this->connected = true;
+        return $this->lobby->toArray(true);
+    }
+}
