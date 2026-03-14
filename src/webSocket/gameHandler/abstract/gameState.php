@@ -5,7 +5,7 @@ use Ratchet\ConnectionInterface;
 class GameState {
     protected ?string $apiKey;
     protected ?string $openedOn;
-    protected array $userData;
+    protected array|bool $userData;
     protected string $id;
     protected int $gameType;
     protected string $lastInput;

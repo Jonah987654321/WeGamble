@@ -2,8 +2,13 @@
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
-use Ratchet\MessageComponentInterface;
+use GameHandler\Blackjack;
+use GameHandler\HitTheNick;
+use GameHandler\Poker;
+use GameHandler\Roulette;
+use GameHandler\Slots;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 require_once __DIR__."/../modules/logging.php";
 
@@ -11,12 +16,7 @@ require_once "gameHandler/blackjack.php";
 require_once "gameHandler/roulette.php";
 require_once "gameHandler/hit-the-nick.php";
 require_once "gameHandler/slots.php";
-require_once "gameHandler/poker.php";
-use GameHandler\Blackjack;
-use GameHandler\Roulette;
-use GameHandler\HitTheNick;
-use GameHandler\Slots;
-use GameHandler\Poker;
+require_once "gameHandler/poker/pokerGS.php";
 
 require_once "gsCache.php";
 

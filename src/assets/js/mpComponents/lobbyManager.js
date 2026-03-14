@@ -2,6 +2,7 @@ class LobbyManager {
     #wsClient;
     #selector;
     #chat;
+    #waitingRoom;
 
     constructor(wsClient) {
         this.#wsClient = wsClient;
@@ -10,7 +11,8 @@ class LobbyManager {
             this.#selector.start();
         });
         this.#wsClient.setGameStateRestoreHandler((data) => {
-            this.#showMainWrapper(false)
+            // TODO -> seperate between started & not started
+            this.#handleLobbySelectorFinished(data["restoredData"], data["restoredData"]["userIsOwner"]);
         });
 
         this.#selector = new LobbySelector(wsClient);
@@ -20,7 +22,13 @@ class LobbyManager {
 
         this.#chat = new Chat(wsClient);
 
+        this.#waitingRoom = new LobbyWaitingRoom(wsClient);
+
         this.#createUIContainers();
+    }
+
+    setGamestartHandler(callback) {
+        this.#waitingRoom.setGameplayHandler(callback);
     }
 
     #showMainWrapper(lobbyStarted) {
@@ -30,11 +38,13 @@ class LobbyManager {
             document.getElementById("lobbyGameTableWrapper").classList.remove("hidden");
         } else {
             document.getElementById("lobbyWaitingWrapper").classList.remove("hidden");
+            this.#waitingRoom.start();
         }
         this.#chat.start();
     }
 
     #handleLobbySelectorFinished(lobbyData, selfCreated) {
+        this.#waitingRoom.setLobbyData(lobbyData, selfCreated)
         this.#showMainWrapper(false);
     }
 

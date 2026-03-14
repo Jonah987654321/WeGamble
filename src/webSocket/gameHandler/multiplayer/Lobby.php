@@ -3,17 +3,18 @@
 require_once __DIR__."/LobbyHandler.php";
 
 class Lobby {
-    private string $id;
-    private string $lobbyName;
-    private int $hasStarted;
-    private array $players;
-    private bool $isPrivate;
-    private ?string $privateLobbyPassword;
-    private int $ownerID;
-    private int $gameID;
-    private int $maxPlayers;
+    protected string $id;
+    protected string $lobbyName;
+    protected int $hasStarted;
+    protected array $players;
+    protected bool $isPrivate;
+    protected ?string $privateLobbyPassword;
+    protected int $ownerID;
+    protected int $gameID;
+    protected int $maxPlayers;
+    protected int $minPlayers;
 
-    public function __construct(GameStateMP $startingGS, $lobbyName, $maxPlayers) {
+    public function __construct(GameStateMP $startingGS, $lobbyName, $maxPlayers, $minPlayers) {
         $this->id = uniqid("mp-lobby_");
         $this->lobbyName = $lobbyName;
         $this->hasStarted = false;
@@ -22,28 +23,55 @@ class Lobby {
         $this->ownerID = $startingGS->getUserData()["userID"];
         $this->gameID = $startingGS->getGameID();
         $this->maxPlayers = $maxPlayers;
+        $this->minPlayers = $minPlayers;
         LobbyHandler::registerLobby($this);
     }
 
-    public function setToPrivate(string $pwd) {
+    public function setToPrivate(string $pwd): void {
         $this->isPrivate = true;
         $this->privateLobbyPassword = $pwd;
     }
+
+    public function hasEnoughPlayers() {
+        return count($this->players) >= $this->minPlayers;
+    }
+
+    public function startGame(): void {
+        if (!$this->hasEnoughPlayers()) return;
+
+        $this->lobbyInit();
+        $this->hasStarted = true;
+        $this->broadcastEvent([
+            "type" => "eventBroadcast",
+            "event" => "gameHasStarted",
+            "data" => [
+                "fullLobbyData" => $this->toArray(true),
+            ]
+        ]);
+
+        $this->gameStartLogic();
+    }
+
+    public function lobbyInit() {}
+    public function gameStartLogic() {}
 
     public function join(GameStateMP $gs, ?string $pwd = null): bool {
         if (($this->isPrivate && $pwd != $this->privateLobbyPassword) || (count($this->players) >= $this->maxPlayers)) {
             return false;
         }
+        $this->players[] = $gs;
         $this->broadcastEvent([
             "type" => "eventBroadcast",
             "event" => "playerJoin",
             "data" => [
-                "playerID" => $gs->getUserData()["userID"],
-                "playerName" => $gs->getUserData()["userName"],
-                "playerBalance" => $gs->getUserData()["balance"]
+                "newPlayer" => [
+                    "playerID" => $gs->getUserData()["userID"],
+                    "playerName" => $gs->getUserData()["userName"],
+                    "playerBalance" => $gs->getUserData()["balance"]
+                ],
+                "fullLobbyData" => $this->toArray(true),
             ]
         ]);
-        $this->players[] = $gs;
         return true;
     }
 
@@ -79,11 +107,13 @@ class Lobby {
             "lobbyName" => $this->lobbyName,
             "lobbyIsPrivate" => $this->isPrivate,
             "lobbyMaxPlayers" => $this->maxPlayers,
+            "lobbyMinPlayers" => $this->minPlayers,
             "lobbyCurrentPlayerCount" => count($this->players),
             "lobbyHasStarted" => $this->hasStarted
         ];
         if ($isJoined) {
             $response["ownerID"] = $this->ownerID;
+            $response["lobbyPassword"] = $this->isPrivate?$this->privateLobbyPassword:"";
             $playerData = [];
             foreach ($this->players as $p) {
                 $reducedPlayer = $p->getUserData();
@@ -92,10 +122,14 @@ class Lobby {
                 $playerData[] = $reducedPlayer;
             }
             $response["players"] = $playerData;
+            $response["gameSpecificData"] = $this->getGameSpecificData();
         }
         return $response;
     }
 
     public function getID(): string { return $this->id; }
     public function getGameID(): int { return $this->gameID; }
+    public function getOwnerID(): int { return $this->ownerID; }
+    public function hasStarted(): bool { return $this->hasStarted; }
+    public function getGameSpecificData(): array { return []; }
 }

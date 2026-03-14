@@ -1,3 +1,10 @@
+.mainWrapper {
+    height: calc(100dvh - 75px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #lobbyContainer {
     width: 100%;
     height: 100%;
@@ -12,9 +19,10 @@
 .lobbyMainSpace {
     width: 80%;
     height: 100%;
+    background-image: url("../../img/poker/table_bg.png");
 }
 
-/** === CHAT CSS === */
+/* === CHAT CSS === */
 #lobbyChatWrapper {
     width: 20%;
     height: 100%;
@@ -173,4 +181,48 @@
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+}
+
+/* === WAITING ROOM CSS === */
+.wr_lobbyHeader {
+    text-align: center;
+    margin: 50px 50px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: rgba(58, 58, 58, 0.8);
+}
+
+.wr_lobbyDetails {
+    display: flex;
+    margin-top: 20px;
+}
+
+.wr_lobbyDetailContent {
+    width: 50%;
+    font-size: 20px;
+}
+
+.wr_lobbyDetailContent i {
+    margin-right: 5px;
+}
+
+.wr_lobbyBody {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 50px;
+    width: calc(100% - 100px);
+    height: 60%;
+    position: relative;
+}
+
+.wr_bodyContent {
+    width: 45%;
+    height: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: rgba(58, 58, 58, 0.8);
+}
+
+.wr_bodyContent i {
+    margin-right: 10px;
 }

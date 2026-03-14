@@ -28,6 +28,7 @@
         
         <input type="hidden" value="<?php echo OmniLogin::getUser()["balance"] ?>" id="userBalanceStash">
         <input type="hidden" value="<?php echo OmniLogin::getUser()["apiToken"] ?>" id="apiTokenStash">
+        <input type="hidden" value="<?php echo OmniLogin::getUser()["userID"] ?>" id="userIDStash">
         <input type="hidden" value="<?php echo config::get("APP_URL"); ?>" id="serverURLStash">
         <input type="hidden" value="<?php echo config::get("WS_URL"); ?>" id="wsURLStash">
     </body>
@@ -36,6 +37,7 @@
     <script src="../../assets/js/overlay.js"></script>
     <script src="../../assets/js/mpComponents/lobbySelector.js"></script>
     <script src="../../assets/js/mpComponents/lobbyChat.js"></script>
+    <script src="../../assets/js/mpComponents/lobbyWaitingRoom.js"></script>
     <script src="../../assets/js/mpComponents/lobbyManager.js"></script>
     <script src="../../assets/js/games/poker.js"></script>
 </html>

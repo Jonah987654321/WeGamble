@@ -115,6 +115,28 @@ class GameStateMP extends GameState {
                     "type" => "success",
                     "event" => "chatMessageSend"
                 ];
+            } else if ($data["type"] == "lobbyStart" && !$this->lobby->hasStarted()) {
+                if ($this->lobby->getOwnerID() != $this->getUserData()["userID"]) {
+                    return [
+                        'type' => 'error',
+                        "code" => ERR_MISSING_PERMISSION,
+                        'message' => 'Only the owner can start the lobby',
+                    ];
+                }
+
+                if (!$this->lobby->hasEnoughPlayers()) {
+                    return [
+                        'type' => 'error',
+                        "code" => ERR_NOT_ENOUGH_PLAYERS,
+                        'message' => 'Not enough players to start',
+                    ];
+                }
+
+                $this->lobby->startGame();
+                return [
+                    "type" => "success",
+                    "event" => "lobbyStart"
+                ];
             } else {
                 return $this->handleGameLogic($data);
             }
@@ -122,11 +144,14 @@ class GameStateMP extends GameState {
     }
 
     public function createGameLobby(array $data): Lobby {
-        $lobby = new Lobby($this, $data["lobbyName"], 100);
+        $lobby = $this->getGameSpecificLobby($data["lobbyName"]);
         if (isset($data["lobbyPassword"]) && trim($data["lobbyPassword"]) !== "") {
             $lobby->setToPrivate($data["lobbyPassword"]);
         }
         return $lobby;
+    }
+    public function getGameSpecificLobby($name): Lobby {
+        return new Lobby($this, $name, 100, 2);
     }
 
     public function handleGameLogic(array $data): array {
@@ -158,6 +183,8 @@ class GameStateMP extends GameState {
 
     public function onCacheRestore(): array {
         $this->connected = true;
-        return $this->lobby->toArray(true);
+        $response = $this->lobby->toArray(true);
+        $response["userIsOwner"] = $this->getUserData()["userID"] == $response["ownerID"];
+        return $response;
     }
 }
