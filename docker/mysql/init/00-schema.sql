@@ -1,55 +1,61 @@
-USE weGambleDB;
+USE `weGambleDB`;
 
 CREATE TABLE IF NOT EXISTS users (
-    userID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    userID INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userName VARCHAR(255) NOT NULL,
     userPassword VARCHAR(255) NOT NULL,
-    balance INT
+    balance INT UNSIGNED NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS apiKeys (
+    apiKey VARCHAR(255) NOT NULL PRIMARY KEY,
     userID INTEGER NOT NULL,
-    apiKey VARCHAR(255) NOT NULL,
-    expirationDate DATETIME NOT NULL
+    expirationDate DATETIME NOT NULL,
+    CONSTRAINT fk_apiKeys_user FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE cascade ON UPDATE cascade
 );
 
 CREATE TABLE IF NOT EXISTS stats (
-    userID INTEGER PRIMARY KEY,
-    allTimeHigh INTEGER,
-    longestWinStreak INTEGER,
-    currentWinStreak INTEGER,
-    longestLooseStreak INTEGER,
-    currentLooseStreak INTEGER,
-    lastLogin DATETIME,
-    highestWin INTEGER,
-    highestLoss INTEGER,
-    playTime BIGINT,
-    totalWins INTEGER,
-    totalWinSum INTEGER,
-    totalLosses INTEGER,
-    totalLossSum INTEGER
+    userID INTEGER NOT NULL PRIMARY KEY,
+    allTimeHigh INTEGER NOT NULL DEFAULT 0,
+    longestWinStreak INTEGER NOT NULL DEFAULT 0,
+    currentWinStreak INTEGER NOT NULL DEFAULT 0,
+    longestLooseStreak INTEGER NOT NULL DEFAULT 0,
+    currentLooseStreak INTEGER NOT NULL DEFAULT 0,
+    lastLogin DATETIME NULL DEFAULT NULL,
+    highestWin INTEGER NOT NULL DEFAULT 0,
+    highestLoss INTEGER NOT NULL DEFAULT 0,
+    playTime BIGINT NOT NULL DEFAULT 0,
+    totalWins INTEGER NOT NULL DEFAULT 0,
+    totalWinSum INTEGER NOT NULL DEFAULT 0,
+    totalLosses INTEGER NOT NULL DEFAULT 0,
+    totalLossSum INTEGER NOT NULL DEFAULT 0,
+    CONSTRAINT fk_stats_user FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE cascade ON UPDATE cascade
 );
 
 CREATE TABLE IF NOT EXISTS history (
-    userID INTEGER,
-    timestamp DATETIME,
-    gameID INTEGER,
-    winLoss INTEGER
+    userID INTEGER NOT NULL,
+    playedAt DATETIME NOT NULL,
+    gameID INTEGER NOT NULL,
+    winLoss INTEGER NOT NULL,
+    CONSTRAINT fk_history_user FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE cascade ON UPDATE cascade
 );
 
 CREATE TABLE IF NOT EXISTS gameSpecificStats (
-    userID INTEGER,
-    gameID INTEGER,
-    playTime BIGINT,
-    wins INTEGER,
-    winSum INTEGER,
-    looses INTEGER,
-    looseSum INTEGER
+    userID INTEGER NOT NULL,
+    gameID INTEGER NOT NULL,
+    playTime BIGINT NOT NULL DEFAULT 0,
+    wins INTEGER NOT NULL DEFAULT 0,
+    winSum INTEGER NOT NULL DEFAULT 0,
+    looses INTEGER NOT NULL DEFAULT 0,
+    looseSum INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (userID, gameID),
+    CONSTRAINT fk_gameSpecificStats_user FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE cascade ON UPDATE cascade
 );
 
 CREATE TABLE IF NOT EXISTS gameTimeSessions (
-    gtID VARCHAR(255),
-    userID INTEGER,
-    gameID INTEGER,
-    startTime DATETIME
+    gtID VARCHAR(255) NOT NULL PRIMARY KEY,
+    userID INTEGER NOT NULL,
+    gameID INTEGER NOT NULL,
+    startTime DATETIME NOT NULL,
+    CONSTRAINT fk_gameTimeSessions_user FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE cascade ON UPDATE cascade
 );

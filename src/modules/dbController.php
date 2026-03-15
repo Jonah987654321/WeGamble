@@ -164,7 +164,7 @@ function getUserStats($userID) {
     }
     $stats = $res->fetch_assoc();
 
-    $stmt = $conn->prepare("SELECT gameID, timestamp, winLoss FROM history WHERE userID=? ORDER BY timestamp DESC");
+    $stmt = $conn->prepare("SELECT gameID, playedAt, winLoss FROM history WHERE userID=? ORDER BY playedAt DESC");
     $stmt->execute([$userID]);
     $res = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stats["history"] = $res;
