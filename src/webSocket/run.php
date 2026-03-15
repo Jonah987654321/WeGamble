@@ -56,7 +56,7 @@ if (config::get("WS_ENABLE_SSL")) {
     */
 
     $loop = Loop::get();
-    $socket = new SocketServer('0.0.0.0:8443', [], $loop);
+    $socket = new SocketServer('0.0.0.0:'. config::get("WS_PORT"), [], $loop);
     $secureSocket = new SecureServer($socket, $loop, $sslConfig);
     
     $server = new IoServer(
