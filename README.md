@@ -25,6 +25,7 @@ Refer to the [LICENSE](./LICENSE) file for details about usage permissions and r
     - Blackjack
     - Slots (not fully finished)
     - Hit the nick (Random 1:9 chance) 
+    - Poker (WIP)
 - Leaderboard
 - Playerstats like total playtime, winstreak, loosestreak, total wins, etc.
 - Modular websocket server design for game backend
@@ -40,42 +41,33 @@ Refer to the [LICENSE](./LICENSE) file for details about usage permissions and r
 - The rest of the frontend is written in HTML with plain CSS & JS
 - The websocket server is written in PHP using [Ratchet](https://github.com/ratchetphp/Ratchet)
 - Logging is realized with [Monolog](https://github.com/Seldaek/monolog)
+- Running & Deployment is setup via docker compose
 
 ## Run Locally
 
 Clone the project
 
 ```bash
-  git clone https://github.com/Jonah987654321/WeGamble.git
+git clone https://github.com/Jonah987654321/WeGamble.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd WeGamble
-```
-
-Install dependencies
-
-```bash
-  cd src && composer install && cd ..
+cd WeGamble
 ```
 
 Rename the example env to be your actual environment file & fill in your values
 
 ```bash
-  mv .env.example .env
+cp .env.example .env
 ```
 
-Start your local PHP development server
+Start the docker containers using the helper script
 ```bash
-php -S localhost:8080 -t src
+docker/run.sh
 ```
 
-Start the websocket server
-```bash
-php src/webSocket/run.php
-```
 ## Roadmap
 
 - Daily login streak with rewards
