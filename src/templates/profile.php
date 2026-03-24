@@ -116,7 +116,7 @@
                             </div>
                             <div class="he-infoSection">
                                 <div class="he-winLoss">'.(($h["winLoss"]>0)?"+":"").formatCurrency($h["winLoss"]).'€</div>
-                                <div class="he-details">'.$gameNames[$h["gameID"]].', '.formatDate($h["timestamp"]).'</div>
+                                <div class="he-details">'.$gameNames[$h["gameID"]].', '.formatDate($h["playedAt"]).'</div>
                             </div>
                         </div>';
                         $i++;
