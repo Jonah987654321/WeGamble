@@ -2,47 +2,30 @@
 
 namespace GameHandler;
 
+use CardDeck;
 use GameState;
-require_once "abstract/gameState.php";
+require_once __DIR__."/abstract/gameState.php";
+require_once __DIR__."/../random/cardDeck.php";
 
 class Blackjack extends GameState {
-    private array $cardValues = [
-        // Numbers 2-10
-        "2C" => 2, "2D" => 2, "2H" => 2, "2S" => 2,
-        "3C" => 3, "3D" => 3, "3H" => 3, "3S" => 3,
-        "4C" => 4, "4D" => 4, "4H" => 4, "4S" => 4,
-        "5C" => 5, "5D" => 5, "5H" => 5, "5S" => 5,
-        "6C" => 6, "6D" => 6, "6H" => 6, "6S" => 6,
-        "7C" => 7, "7D" => 7, "7H" => 7, "7S" => 7,
-        "8C" => 8, "8D" => 8, "8H" => 8, "8S" => 8,
-        "9C" => 9, "9D" => 9, "9H" => 9, "9S" => 9,
-        "10C" => 10, "10D" => 10, "10H" => 10, "10S" => 10,
-        
-        // Face cards (all with value 10)
-        "JC" => 10, "JD" => 10, "JH" => 10, "JS" => 10,
-        "QC" => 10, "QD" => 10, "QH" => 10, "QS" => 10,
-        "KC" => 10, "KD" => 10, "KH" => 10, "KS" => 10,
-        
-        // Aces (all with value 11)
-        "AC" => 11, "AD" => 11, "AH" => 11, "AS" => 11
-    ];
     private int $betAmount;
     private array $userCards;
     private array $dealerCards;
-    private array $availableCards;
     private array $acceptableNext;
     private array $queue;
     private bool $secondDealerCardShown;
+    private CardDeck $cards;
 
     public function __construct() {
         parent::__construct(GID_BLACKJACK);
+        $this->cards = new CardDeck();
         $this->cleanSetup();
     }
 
     private function cleanSetup() {
         $this->userCards = [];
         $this->dealerCards = [];
-        $this->availableCards = array_keys($this->cardValues);
+        $this->cards->resetCards();
         $this->acceptableNext = ["initGame"];
         $this->queue = [];
         $this->secondDealerCardShown = true;
@@ -97,19 +80,19 @@ class Blackjack extends GameState {
 
             $newCards = [];
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>1, "card"=>$c];
             $this->userCards[] = $c;
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>2, "card"=>$c];
             $this->dealerCards[] = $c;
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>1, "card"=>$c];
             $this->userCards[] = $c;
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>2, "card"=>$c];
             $this->dealerCards[] = $c;
 
@@ -122,7 +105,7 @@ class Blackjack extends GameState {
                 return $this->loose("initGame", "Dealer: Blackjack!", $newCards);
             } else {
                 $this->acceptableNext = ["stand", "hit", "surrender"];
-                if ($this->cardValues[$this->userCards[0]] == $this->cardValues[$this->userCards[1]]) {
+                if (CardDeck::getCardValue($this->userCards[0]) == CardDeck::getCardValue($this->userCards[1])) {
                     $this->acceptableNext[] = "split";
                 }
                 if ($this->betAmount*2 <= $this->userData["balance"]) {
@@ -152,7 +135,7 @@ class Blackjack extends GameState {
         if ($data["type"] == "hit") {
             $newCards = [];
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>1, "card"=>$c];
             $this->userCards[] = $c;
 
@@ -181,7 +164,7 @@ class Blackjack extends GameState {
             $this->betAmount *= 2;
             $newCards = [];
 
-            $c = $this->drawCard();
+            $c = $this->cards->drawCard();
             $newCards[] = ["type"=>1, "card"=>$c];
             $this->userCards[] = $c;
 
@@ -198,7 +181,7 @@ class Blackjack extends GameState {
             $this->secondDealerCardShown = true;
 
             while ($this->calcCardValues($this->dealerCards) <= 16) {
-                $c = $this->drawCard();
+                $c = $this->cards->drawCard();
                 $newCards[] = ["type"=>2, "card"=>$c];
                 $this->dealerCards[] = $c;
             }
@@ -304,8 +287,8 @@ class Blackjack extends GameState {
         $val = 0;
         $aces = 0;
         foreach ($cards as $c) {
-            $val += $this->cardValues[$c];
-            if ($this->cardValues[$c] == 11) {
+            $val += CardDeck::getCardValue($c);
+            if (CardDeck::getCardValue($c) == 11) {
                 $aces++;
             }
         }
@@ -315,14 +298,6 @@ class Blackjack extends GameState {
             --$aces;
         }
         return $val;
-    }
-
-    private function drawCard() {
-        $newCardIndex = rand(0, count($this->availableCards)-1);
-        $card = $this->availableCards[$newCardIndex];
-        unset($this->availableCards[$newCardIndex]);
-        $this->availableCards = array_values($this->availableCards); //Reindex to close gaps
-        return $card;
     }
 }
 
