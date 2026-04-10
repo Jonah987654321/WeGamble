@@ -13,6 +13,7 @@ const ws = new WsClient(wsURL, gameID, apiKey);
 const lobbyManager = new LobbyManager(ws);
 
 lobbyManager.setGamestartHandler((data) => {
+    console.log(data);
     const mainWrapper = document.getElementById("lobbyGameTableWrapper");
 
     const pokerTableContainer = document.createElement("div");
@@ -51,12 +52,12 @@ lobbyManager.setGamestartHandler((data) => {
             if (curr["userID"] == userID) {
                 ownIndex = i;
 
-                createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["userBalances"][curr["userID"]]);
+                createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["gameData"]["players"][curr["userID"]]["balance"]);
                 nextDegree += degIncrement;
             }
         } else {
             // Already found ourselves as entry
-            createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["userBalances"][curr["userID"]]);
+            createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["gameData"]["players"][curr["userID"]]["balance"]);
             nextDegree += degIncrement;
         }
     }
@@ -64,7 +65,7 @@ lobbyManager.setGamestartHandler((data) => {
     // Create the players who we skipped before
     for (let i = 0; i < ownIndex; i++) {
         const curr = players[i];
-        createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["userBalances"][curr["userID"]]);
+        createPlayerSeat(curr, nextDegree, lobbyData["gameSpecificData"]["gameData"]["players"][curr["userID"]]["balance"]);
         nextDegree += degIncrement;
     }
 });

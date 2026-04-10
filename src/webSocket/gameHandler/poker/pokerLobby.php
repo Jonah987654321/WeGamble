@@ -14,38 +14,42 @@ class PokerLobby extends Lobby {
     private int $settingSmallBlind = 25;
     private int $settingsPlayerTimeToAct = 25;
 
+    private PokerTable $table;
+
+    private bool $isInit = false;
+
     // Round specific attributes:
     private int $status;
     private int $currentlyWaitingForPlayerPos;
     private int $currentSmallBlindPos;
-    private int $currentBigBlindPos;
     private CardDeck $cards;
-    private array $userCards = [];
     private array $tableCards = [];
     private array $roundPots = [];
     private array $currentRaises = [];
-    private array $allIns = [];
-
-    private array $userBalances = [];
-    private array $playerIDs;
 
     private bool $blockedTillRetry = false;
 
     public function lobbyInit(): void {
         $this->currentSmallBlindPos = 0;
         $this->cards = new CardDeck();
+        $this->table = new PokerTable();
 
-        // Initial buy-ins
+        // Setup playerdata & do buy-ins
         foreach ($this->players as $player) {
             $userBalance = $player->getUserData()["balance"];
             $userID = $player->getUserData()["userID"];
             if ($userBalance >= $this->settingBuyIn) {
                 updateBalance($userID, $userBalance - $this->settingBuyIn);
-                $this->userBalances[$userID] = $this->settingBuyIn;
+                $initBalance = $this->settingBuyIn;
             } else {
-                $this->userBalances[$userID] = 0;
+                $initBalance = 0;
             }
+
+            $playerObj = new PokerPlayer($userID, $initBalance);
+            $this->table->addPlayer($playerObj);
         }
+
+        $this->isInit = true;
     }
 
     public function gameStartLogic(): void {
@@ -56,16 +60,17 @@ class PokerLobby extends Lobby {
         $this->status = STATUS_PREFLOP;
 
         // DEALING CARDS:
-        $this->userCards = [];
         $playingUsers = [];
         foreach ($this->players as $player)  {
             $userID = $player->getUserData()["userID"];
-            if ($player->isConnected() && $this->userBalances[$userID] > 0) {
-                $this->userCards[$userID] = [$this->cards->drawCard(), $this->cards->drawCard()];
+            $userObj = $this->table->getPlayerByID($userID);
+
+            if ($player->isConnected() && $userObj->balance > 0) {
+                $userObj->cards = [$this->cards->drawCard(), $this->cards->drawCard()];
+                $userObj->isPlaying = true;
                 $playingUsers[$userID] = true;
             } else {
-                // "empty" cards = user is not playing this round
-                $this->userCards[$userID] = [];
+                $userObj->isPlaying = false;
                 $playingUsers[$userID] = false;
             }
         }
@@ -82,105 +87,169 @@ class PokerLobby extends Lobby {
                     "event" => "poker_newRound",
                     "data" => [
                         "activePlayers" => $playingUsers,
-                        "playerCards" => $this->userCards[$player->getUserData()["userID"]]
+                        "playerCards" => $this->table->getPlayerByID($player->getUserData()["userID"])->cards
                     ]
                 ]);
             }
         }
 
         // Find blinds
-        $this->playerIDs = array_keys($this->userCards);
-        $playerCount = count($this->playerIDs);
-        $start = $this->currentSmallBlindPos;
-        while (!$this->isUserPlaying($this->playerIDs[$this->currentSmallBlindPos])) {
-            $this->currentSmallBlindPos++;
-            $this->currentSmallBlindPos = $this->currentSmallBlindPos%$playerCount;
-            if ($this->currentSmallBlindPos == $start) {
-                $this->broadcastEvent([
-                    "type" => "eventBroadcast",
-                    "event" => "poker_newRoundCancel",
-                    "message" => "Not enough players connected and with balance"
-                ]);
-                $this->blockedTillRetry = true;
-                return;
-            }
+        $smallBlind = $this->findNextPlayingUser($this->currentSmallBlindPos);
+        if ($smallBlind == -1) {
+            $this->setBlockerForNotEnoughPlayers();
+            return;
         }
-        $this->currentBigBlindPos = ($this->currentSmallBlindPos+1)%$playerCount;
-        while (!$this->isUserPlaying($this->playerIDs[$this->currentBigBlindPos])) {
-            $this->currentBigBlindPos++;
-            $this->currentBigBlindPos = $this->currentBigBlindPos%$playerCount;
-            if ($this->currentBigBlindPos == $this->currentSmallBlindPos) {
-                $this->broadcastEvent([
-                    "type" => "eventBroadcast",
-                    "event" => "poker_newRoundCancel",
-                    "message" => "Not enough players connected and with balance"
-                ]);
-                $this->blockedTillRetry = true;
-                return;
-            }
+        $this->currentSmallBlindPos = $smallBlind;
+
+        $bigBlind = $this->findNextPlayingUser($this->currentSmallBlindPos+1);
+        if ($bigBlind== -1) {
+            $this->setBlockerForNotEnoughPlayers();
+            return;
         }
 
-        // New "Raise" from small blind
-        if ($this->userBalances[$this->playerIDs[$this->currentSmallBlindPos]] < $this->settingSmallBlind) {
-            // Blind forces an all-in
-            $this->allIns[] = $this->playerIDs[$this->currentSmallBlindPos];
-            $this->currentRaises[$this->playerIDs[$this->currentSmallBlindPos]] = $this->userBalances[$this->playerIDs[$this->currentSmallBlindPos]];
-            $this->userBalances[$this->playerIDs[$this->currentSmallBlindPos]] = 0;
-        } else {
-            $this->currentRaises[$this->playerIDs[$this->currentSmallBlindPos]] = $this->settingSmallBlind;
-            $this->userBalances[$this->playerIDs[$this->currentSmallBlindPos]] -= $this->settingSmallBlind;
-        }
-
-        // New "Raise" from big blind
-        if ($this->userBalances[$this->playerIDs[$this->currentBigBlindPos]] < $this->settingSmallBlind*2) {
-            $this->allIns[] = $this->playerIDs[$this->currentBigBlindPos];
-            $this->currentRaises[$this->playerIDs[$this->currentBigBlindPos]] = $this->userBalances[$this->playerIDs[$this->currentSmallBlindPos]];
-            $this->userBalances[$this->playerIDs[$this->currentBigBlindPos]] = 0;
-        } else {
-            $this->currentRaises[$this->playerIDs[$this->currentBigBlindPos]] = $this->settingSmallBlind*2;
-            $this->userBalances[$this->playerIDs[$this->currentBigBlindPos]] -= $this->settingSmallBlind*2;
-        }
-        $this->broadcastEvent([
-            "type" => "eventBroadcast",
-            "event" => "poker_bidsPlaced",
-            "pos" =>  [
-                "sb" => $this->playerIDs[$this->currentSmallBlindPos],
-                "bb" => $this->playerIDs[$this->currentBigBlindPos]
-            ],
-            "data" => [
-                "raises" => $this->currentRaises,
-                "allIns" => $this->allIns
-            ]
-        ]);
+        $this->createBet($this->table->getPlayerByIndex($this->currentSmallBlindPos), $this->settingSmallBlind, "Small Blind");
+        $this->createBet($this->table->getPlayerByIndex($bigBlind), $this->settingSmallBlind*2, "Big Blind");
 
         // Check for next player to act
-        $this->currentlyWaitingForPlayerPos = ($this->currentBigBlindPos+1)%$playerCount;
-        while (!$this->isUserPlaying($this->playerIDs[$this->currentlyWaitingForPlayerPos])) {
-            $this->currentlyWaitingForPlayerPos++;
-            $this->currentlyWaitingForPlayerPos = $this->currentlyWaitingForPlayerPos%$playerCount;
-        }
+        $this->currentlyWaitingForPlayerPos = $this->findNextPlayingUser($bigBlind +1);
         $this->broadcastEvent([
             "type" => "eventBroadcast",
             "event" => "poker_requestAction",
             "data" => [
-                "targetPlayer" => $this->playerIDs[$this->currentlyWaitingForPlayerPos],
+                "targetPlayer" => $this->table->getPlayerByIndex($this->currentlyWaitingForPlayerPos)->userID,
                 "timeToAct" => $this->settingsPlayerTimeToAct
             ]
         ]);
     }
 
-    private function isUserPlaying($userID): bool {
-        return count($this->userCards[$userID])==2;
+    private function createBet(PokerPlayer $user,  int $betAmount, string $betName): void {
+        if ($user->balance <= $betAmount) {
+            // Bet amount forces an all-in
+            $user->isAllIn = true;
+            $betAmount = $user->balance;
+        }
+
+        $this->currentRaises[$user->userID] = $betAmount;
+        $user->balance -= $betAmount;
+
+        $this->broadcastEvent([
+            "type" => "eventBroadcast",
+            "event" => "poker_betCreated",
+            "data" => [
+                "userID" => $user->userID,
+                "isAllIn" => $user->isAllIn,
+                "betAmount" => $betAmount,
+                "betName" => $betName
+            ]
+        ]);
+    }
+
+    private function setBlockerForNotEnoughPlayers(): void {
+        $this->broadcastEvent([
+            "type" => "eventBroadcast",
+            "event" => "poker_newRoundCancel",
+            "message" => "Not enough players connected and with balance"
+        ]);
+        $this->blockedTillRetry = true;
+    }
+
+    private function findNextPlayingUser($startIndex): int {
+        $startIndex = $startIndex%$this->table->getPlayerCount();
+        $currentIndex = $startIndex;
+        while (!$this->table->getPlayerByIndex($currentIndex)->isPlaying) {
+            $currentIndex = ($currentIndex+1)%$this->table->getPlayerCount();
+            if ($currentIndex == $startIndex) {
+                return -1;
+            }
+        }
+        return $currentIndex;
     }
 
     public function getGameSpecificData(): array {
-        return [
+        $data = [
             "settings" => [
                 "buyIn" => $this->settingBuyIn,
                 "smallBlind" => $this->settingSmallBlind,
                 "playerActionTime" => $this->settingsPlayerTimeToAct
-            ],
-            "userBalances" => $this->userBalances
+            ]
+        ];
+
+        if ($this->isInit) {
+            $data["gameData"] = [
+                "players" => $this->table->toArray()
+            ];
+        }
+
+        return $data;
+    }
+}
+
+class PokerTable {
+    private array $players;
+
+    public function __construct() {
+        $this->players = [];
+    }
+
+    public function addPlayer(PokerPlayer $player): void {
+        $this->players[] = $player;
+    }
+
+    public function getPlayerByID(int $userID): PokerPlayer {
+        foreach ($this->players as $player) {
+            if ($player->userID == $userID) {
+                return $player;
+            }
+        }
+
+        throw new InvalidArgumentException("No player with ID $userID on table");
+    }
+
+    public function getPlayerByIndex(int $index): PokerPlayer {
+        if ($index >= count($this->players)) {
+            throw new InvalidArgumentException("Index $index is out of bounds for table");
+        }
+
+        return $this->players[$index];
+    }
+
+    public function getPlayerCount(): int {
+        return count($this->players);
+    }
+
+    public function toArray(): array {
+        $result = [];
+        foreach ($this->players as $player) {
+            $result[$player->userID] = $player->toArray();
+        }
+        return $result;
+    }
+}
+
+class PokerPlayer {
+    public int $userID;
+    public int $balance;
+    public array $cards;
+
+    public bool $isPlaying;
+    public bool $isAllIn;
+
+    public function __construct(int $userID, int $initBalance) {
+        $this->userID = $userID;
+        $this->balance = $initBalance;
+
+        $this->isAllIn = false;
+        $this->isPlaying = true;
+
+        $this->cards = [];
+    }
+
+    public function toArray(): array {
+        return [
+            "userID" => $this->userID,
+            "balance" => $this->balance,
+            "isPlaying" => $this->isPlaying,
+            "isAllIn" => $this->isAllIn
         ];
     }
 }
