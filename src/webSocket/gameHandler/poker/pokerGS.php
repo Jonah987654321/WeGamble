@@ -13,12 +13,12 @@ class Poker extends GameStateMP {
         parent::__construct(GID_POKER);
     }
 
-    public function getGameSpecificLobby($name): Lobby{
+    public function getGameSpecificLobby($name): Lobby {
         return new \PokerLobby($this, $name, 10, 2);
     }
 
     public function handleGameLogic(array $data): array {
-
+        
     }
 }
 

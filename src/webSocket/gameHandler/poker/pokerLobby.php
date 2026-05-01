@@ -122,6 +122,11 @@ class PokerLobby extends Lobby {
         ]);
     }
 
+
+    /**
+     * ==== HELPER FUNCTIONS ====
+     */
+
     private function createBet(PokerPlayer $user,  int $betAmount, string $betName): void {
         if ($user->balance <= $betAmount) {
             // Bet amount forces an all-in
